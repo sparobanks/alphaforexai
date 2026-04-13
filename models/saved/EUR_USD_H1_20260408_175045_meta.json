@@ -1,0 +1,108 @@
+{
+  "pair": "EUR_USD",
+  "timeframe": "H1",
+  "trained_at": "2026-04-08T17:50:45.588517",
+  "train_rows": 17999,
+  "model_path": "/app/models/saved/EUR_USD_H1_20260408_175045.joblib",
+  "walk_forward": [
+    {
+      "n_trades": 1440,
+      "win_rate": 0.3986,
+      "expectancy": -0.03,
+      "profit_factor": 0.994,
+      "max_drawdown": 660.0,
+      "sharpe": -0.003,
+      "auc": 0.5243,
+      "fold": 1
+    },
+    {
+      "n_trades": 1440,
+      "win_rate": 0.459,
+      "expectancy": 1.48,
+      "profit_factor": 1.273,
+      "max_drawdown": 355.0,
+      "sharpe": 0.118,
+      "auc": 0.5356,
+      "fold": 2
+    },
+    {
+      "n_trades": 1440,
+      "win_rate": 0.4542,
+      "expectancy": 1.35,
+      "profit_factor": 1.248,
+      "max_drawdown": 475.0,
+      "sharpe": 0.109,
+      "auc": 0.538,
+      "fold": 3
+    },
+    {
+      "n_trades": 1440,
+      "win_rate": 0.4257,
+      "expectancy": 0.64,
+      "profit_factor": 1.112,
+      "max_drawdown": 615.0,
+      "sharpe": 0.052,
+      "auc": 0.4865,
+      "fold": 4
+    },
+    {
+      "n_trades": 1442,
+      "win_rate": 0.4092,
+      "expectancy": 0.23,
+      "profit_factor": 1.039,
+      "max_drawdown": 765.0,
+      "sharpe": 0.019,
+      "auc": 0.501,
+      "fold": 5
+    }
+  ],
+  "avg_metrics": {
+    "win_rate": 0.4293,
+    "expectancy": 0.734,
+    "profit_factor": 1.1332,
+    "max_drawdown": 574.0,
+    "sharpe": 0.059
+  },
+  "top_features": [
+    [
+      "rsi_21",
+      0.04347269609570503
+    ],
+    [
+      "sess_newyork",
+      0.039975132793188095
+    ],
+    [
+      "dist_ema20",
+      0.039360079914331436
+    ],
+    [
+      "dist_ema50",
+      0.03876460716128349
+    ],
+    [
+      "vol_norm",
+      0.03504020720720291
+    ],
+    [
+      "price_pos_50",
+      0.03435034677386284
+    ],
+    [
+      "mom_20",
+      0.03271815553307533
+    ],
+    [
+      "atr_norm",
+      0.03225875273346901
+    ],
+    [
+      "ema_20_50_diff",
+      0.03212391585111618
+    ],
+    [
+      "sess_overlap",
+      0.030989663675427437
+    ]
+  ]
+}

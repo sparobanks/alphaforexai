@@ -1,0 +1,108 @@
+{
+  "pair": "EUR_USD",
+  "timeframe": "H1",
+  "trained_at": "2026-04-08T11:56:23.696811",
+  "train_rows": 18415,
+  "model_path": "/app/models/saved/EUR_USD_H1_20260408_115623.joblib",
+  "walk_forward": [
+    {
+      "n_trades": 1474,
+      "win_rate": 0.483,
+      "expectancy": 4.49,
+      "profit_factor": 1.869,
+      "max_drawdown": 550.0,
+      "sharpe": 0.3,
+      "auc": 0.4642,
+      "fold": 1
+    },
+    {
+      "n_trades": 1436,
+      "win_rate": 0.4074,
+      "expectancy": 2.22,
+      "profit_factor": 1.375,
+      "max_drawdown": 710.0,
+      "sharpe": 0.151,
+      "auc": 0.5356,
+      "fold": 2
+    },
+    {
+      "n_trades": 1256,
+      "win_rate": 0.4904,
+      "expectancy": 4.71,
+      "profit_factor": 1.925,
+      "max_drawdown": 510.0,
+      "sharpe": 0.314,
+      "auc": 0.539,
+      "fold": 3
+    },
+    {
+      "n_trades": 1474,
+      "win_rate": 0.4891,
+      "expectancy": 4.67,
+      "profit_factor": 1.915,
+      "max_drawdown": 440.0,
+      "sharpe": 0.312,
+      "auc": 0.5282,
+      "fold": 4
+    },
+    {
+      "n_trades": 1004,
+      "win_rate": 0.4631,
+      "expectancy": 3.89,
+      "profit_factor": 1.725,
+      "max_drawdown": 480.0,
+      "sharpe": 0.26,
+      "auc": 0.5688,
+      "fold": 5
+    }
+  ],
+  "avg_metrics": {
+    "win_rate": 0.4666,
+    "expectancy": 3.996,
+    "profit_factor": 1.7618,
+    "max_drawdown": 538.0,
+    "sharpe": 0.2674
+  },
+  "top_features": [
+    [
+      "sess_london",
+      0.06931494921445847
+    ],
+    [
+      "sess_newyork",
+      0.06761138886213303
+    ],
+    [
+      "sess_asia",
+      0.05821602791547775
+    ],
+    [
+      "atr_14_norm",
+      0.055398810654878616
+    ],
+    [
+      "dist_ma50",
+      0.05447238311171532
+    ],
+    [
+      "dist_ma20",
+      0.05251999571919441
+    ],
+    [
+      "bb_width",
+      0.050697799772024155
+    ],
+    [
+      "dist_ma100",
+      0.046963293105363846
+    ],
+    [
+      "bb_pct",
+      0.04348192736506462
+    ],
+    [
+      "vol_norm",
+      0.04299222677946091
+    ]
+  ]
+}

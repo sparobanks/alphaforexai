@@ -1,0 +1,116 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #0a0a0a;
+  color: #f5f4f0;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+html { scroll-behavior: smooth; }
+
+/* Inputs */
+input::placeholder, textarea::placeholder { color: #555550; }
+input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.5); }
+select option { background: #111; color: #f5f4f0; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: #111; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+
+/* Responsive containers */
+@media (max-width: 768px) {
+  .hide-mobile { display: none !important; }
+  .full-mobile { width: 100% !important; }
+}
+
+/* Pricing stacked on mobile */
+@media (max-width: 860px) {
+  .pricing-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    border: none !important;
+  }
+  .pricing-col {
+    border-right: none !important;
+    border-radius: 12px !important;
+    border: 1px solid #222 !important;
+  }
+}
+
+/* Feature grid */
+@media (max-width: 700px) {
+  .feature-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Stats grid on dashboard */
+@media (max-width: 640px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+@media (max-width: 380px) {
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Signal table on mobile - horizontal scroll */
+.table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Auth pages */
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 24px 20px !important;
+    margin: 0 !important;
+    border-radius: 12px !important;
+  }
+  .auth-wrap {
+    padding: 20px 16px !important;
+    align-items: flex-start !important;
+    padding-top: 40px !important;
+  }
+}
+
+/* Profile form grid */
+@media (max-width: 540px) {
+  .profile-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Admin tables */
+@media (max-width: 900px) {
+  .admin-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Footer */
+@media (max-width: 700px) {
+  .footer-inner {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 28px !important;
+  }
+}
+@media (max-width: 420px) {
+  .footer-inner {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Nav responsive */
+@media (max-width: 768px) {
+  .nav-links-desktop { display: none !important; }
+  .nav-auth-desktop  { display: none !important; }
+}
+@media (min-width: 769px) {
+  .nav-burger-btn { display: none !important; }
+}

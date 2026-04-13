@@ -1,0 +1,107 @@
+
+services:
+
+  db:
+
+    image: postgres:16-alpine
+
+    restart: always
+
+    environment:
+
+      POSTGRES_USER: forexai
+
+      POSTGRES_PASSWORD: 7eb1c2c123230e2296d06872785b004c
+
+      POSTGRES_DB: forexai
+
+    volumes:
+
+      - pgdata:/var/lib/postgresql/data
+
+    healthcheck:
+
+      test: ["CMD-SHELL", "pg_isready -U forexai"]
+
+      interval: 10s
+
+      timeout: 5s
+
+      retries: 5
+
+  redis:
+
+    image: redis:7-alpine
+
+    restart: always
+
+    volumes:
+
+      - redisdata:/data
+
+    command: redis-server --appendonly yes
+
+  api:
+
+    build:
+
+      context: .
+
+      dockerfile: Dockerfile
+
+    restart: always
+
+    env_file: .env
+
+    ports:
+
+      - "8000:8000"
+
+    depends_on:
+
+      db:
+
+        condition: service_healthy
+
+      redis:
+
+        condition: service_started
+
+    volumes:
+
+      - ./models:/app/models
+
+      - ./logs:/app/logs
+
+    command: uvicorn app.api.main_full:app --host 0.0.0.0 --port 8000 --workers 2
+
+  frontend:
+
+    build:
+
+      context: ./frontend
+
+      dockerfile: Dockerfile.frontend
+
+      args:
+
+        - NEXT_PUBLIC_API_URL=https://alphaforexai.com/api/v1
+
+    restart: always
+
+    ports:
+
+      - "3000:3000"
+
+    environment:
+
+      - NEXT_PUBLIC_API_URL=https://alphaforexai.com/api/v1
+
+      - NODE_ENV=production
+
+volumes:
+
+  pgdata:
+
+  redisdata:
+

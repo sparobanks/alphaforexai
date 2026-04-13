@@ -1,0 +1,78 @@
+{
+  "pair": "EUR_USD",
+  "timeframe": "H4",
+  "trained_at": "2026-04-08T12:01:12.186746",
+  "train_rows": 4532,
+  "model_path": "/app/models/saved/EUR_USD_H4_20260408_120112.joblib",
+  "walk_forward": [
+    {
+      "error": "No signals generated at this threshold",
+      "fold": 1
+    },
+    {
+      "error": "No signals generated at this threshold",
+      "fold": 2
+    },
+    {
+      "error": "No signals generated at this threshold",
+      "fold": 3
+    },
+    {
+      "error": "No signals generated at this threshold",
+      "fold": 4
+    },
+    {
+      "error": "No signals generated at this threshold",
+      "fold": 5
+    }
+  ],
+  "avg_metrics": {
+    "win_rate": NaN,
+    "expectancy": NaN,
+    "profit_factor": NaN,
+    "max_drawdown": NaN,
+    "sharpe": NaN
+  },
+  "top_features": [
+    [
+      "atr_14_norm",
+      0.06871519982814789
+    ],
+    [
+      "sess_newyork",
+      0.053220588713884354
+    ],
+    [
+      "dist_ma100",
+      0.050012245774269104
+    ],
+    [
+      "rsi_7",
+      0.04996301978826523
+    ],
+    [
+      "bb_pct",
+      0.04712267592549324
+    ],
+    [
+      "rsi_14",
+      0.046829041093587875
+    ],
+    [
+      "bb_width",
+      0.04494655132293701
+    ],
+    [
+      "ret_10",
+      0.04323764890432358
+    ],
+    [
+      "macd_hist_chg",
+      0.042910754680633545
+    ],
+    [
+      "dist_ma20",
+      0.042624037712812424
+    ]
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "pair": "EUR_USD",
+  "timeframe": "H1",
+  "trained_at": "2026-04-05T17:03:42.973626",
+  "train_rows": 18381,
+  "model_path": "/app/models/saved/EUR_USD_H1_20260405_170342.joblib",
+  "walk_forward": [
+    {
+      "error": "No signals generated at this threshold",
+      "fold": 1
+    },
+    {
+      "error": "No signals generated at this threshold",
+      "fold": 2
+    },
+    {
+      "error": "No signals generated at this threshold",
+      "fold": 3
+    },
+    {
+      "error": "No signals generated at this threshold",
+      "fold": 4
+    },
+    {
+      "error": "No signals generated at this threshold",
+      "fold": 5
+    }
+  ],
+  "avg_metrics": {
+    "win_rate": NaN,
+    "expectancy": NaN,
+    "profit_factor": NaN,
+    "max_drawdown": NaN,
+    "sharpe": NaN
+  },
+  "top_features": [
+    [
+      "sess_london",
+      0.18083526194095612
+    ],
+    [
+      "sess_overlap",
+      0.07737874984741211
+    ],
+    [
+      "atr_14_norm",
+      0.06851594895124435
+    ],
+    [
+      "vol_norm",
+      0.05206087976694107
+    ],
+    [
+      "sess_asia",
+      0.042574699968099594
+    ],
+    [
+      "dist_ma50",
+      0.0421113558113575
+    ],
+    [
+      "bb_width",
+      0.03463136777281761
+    ],
+    [
+      "ret_1",
+      0.034575194120407104
+    ],
+    [
+      "dist_ma100",
+      0.03427983820438385
+    ],
+    [
+      "macd_hist",
+      0.032604366540908813
+    ]
+  ]
+}
