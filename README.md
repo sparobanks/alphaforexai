@@ -143,10 +143,10 @@ can still lose money. Expectancy is the number that matters.
 | Tier | Price | Features |
 |------|-------|----------|
 | Free | £0 | 1 pair, delayed signals, weekly stats |
-| Pro  | £19/mo | Live signals, confidence scores, full dashboard |
-| VIP  | £49/mo | Multi-pair, AI breakdown, priority alerts |
+| Pro  | £10/mo | Live signals, confidence scores, full dashboard |
+| VIP  | £20/mo | Multi-pair, AI breakdown, priority alerts |
 
-Target: 100 Pro users = £1,900/mo → 300 users = £5,700/mo
+Target: 100 Pro users = £1,000/mo → 300 users = £3,000/mo
 
 ---
 
@@ -187,13 +187,3 @@ forex_ai_signals/
 ```
 
 ---
-
-## Next Steps (after MVP)
-
-- [ ] Add EUR/GBP, GBP/USD as second pairs
-- [ ] MT5 auto-import for trade execution
-- [ ] Stripe subscription for Free/Pro/VIP tiers
-- [ ] Weekly performance email digest
-- [ ] "AI Trade Doctor" — pattern analysis per user
-- [ ] LightGBM model comparison
-- [ ] LSTM for sequence-based features (later)
