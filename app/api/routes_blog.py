@@ -294,3 +294,49 @@ async def delete_media(media_id: int, db: AsyncSession = Depends(get_db)):
     await db.delete(item)
     await db.commit()
     return {"ok": True}
+
+
+import os, uuid, base64
+
+UPLOAD_DIR = "/app/../frontend/public/uploads"
+
+@router.post("/media/upload")
+async def upload_media_file(body: dict, db: AsyncSession = Depends(get_db)):
+    """Save base64 image to disk and return public URL."""
+    data     = body.get("data", "")
+    filename = body.get("filename", "image.jpg")
+    
+    if not data:
+        raise HTTPException(status_code=400, detail="No image data")
+
+    # Extract base64 content
+    if "," in data:
+        header, b64 = data.split(",", 1)
+        ext = header.split("/")[1].split(";")[0] if "/" in header else "jpg"
+    else:
+        b64  = data
+        ext  = filename.rsplit(".", 1)[-1] if "." in filename else "jpg"
+
+    # Generate unique filename
+    unique_name = f"{uuid.uuid4().hex}.{ext}"
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+    filepath = os.path.join(UPLOAD_DIR, unique_name)
+
+    # Save file
+    with open(filepath, "wb") as f:
+        f.write(base64.b64decode(b64))
+
+    public_url = f"https://alphaforexai.com/uploads/{unique_name}"
+
+    # Also save to media library
+    item = MediaLibrary(
+        filename=filename,
+        data=public_url,  # Store URL not base64
+        mime_type=f"image/{ext}",
+        size_bytes=os.path.getsize(filepath),
+    )
+    db.add(item)
+    await db.commit()
+    await db.refresh(item)
+
+    return {"url": public_url, "id": item.id}

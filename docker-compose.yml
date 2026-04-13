@@ -72,8 +72,9 @@ services:
       - ./models:/app/models
 
       - ./logs:/app/logs
+      - ./uploads:/frontend/public/uploads
 
-    command: uvicorn app.api.main_full:app --host 0.0.0.0 --port 8000 --workers 2
+    command: uvicorn app.api.main_full:app --host 0.0.0.0 --port 8000
 
   frontend:
 
