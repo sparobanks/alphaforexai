@@ -3,7 +3,7 @@ Blog system - models, routes, full SEO support.
 """
 from datetime import datetime
 from typing import Optional, List
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Request, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, desc, or_
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, ForeignKey, Table
@@ -353,3 +353,190 @@ async def upload_media_file(body: dict, db: AsyncSession = Depends(get_db)):
     await db.refresh(item)
 
     return {"url": public_url, "id": item.id}
+
+
+# ── Analytics tracking ────────────────────────────────────────────────────────
+import hashlib
+from datetime import datetime, timedelta
+from sqlalchemy import func, case
+
+class PageVisit(Base):
+    __tablename__ = "page_visits"
+    id         = SaColumn(SaInteger, primary_key=True)
+    path       = SaColumn(SaString(500))
+    referrer   = SaColumn(SaString(500))
+    user_agent = SaColumn(SaText)
+    country    = SaColumn(SaString(100))
+    device     = SaColumn(SaString(50))
+    browser    = SaColumn(SaString(100))
+    os         = SaColumn(SaString(100))
+    ip_hash    = SaColumn(SaString(64))
+    created_at = SaColumn(SaDateTime(timezone=True), default=datetime.utcnow)
+
+
+def parse_user_agent(ua: str) -> dict:
+    ua = ua.lower()
+    # Device
+    if any(x in ua for x in ["mobile", "android", "iphone", "ipod"]):
+        device = "Mobile"
+    elif any(x in ua for x in ["tablet", "ipad"]):
+        device = "Tablet"
+    else:
+        device = "Desktop"
+    # Browser
+    if "edg" in ua:       browser = "Edge"
+    elif "chrome" in ua:  browser = "Chrome"
+    elif "firefox" in ua: browser = "Firefox"
+    elif "safari" in ua:  browser = "Safari"
+    elif "opera" in ua:   browser = "Opera"
+    else:                 browser = "Other"
+    # OS
+    if "windows" in ua:   os = "Windows"
+    elif "android" in ua: os = "Android"
+    elif "iphone" in ua or "ipad" in ua: os = "iOS"
+    elif "mac" in ua:     os = "macOS"
+    elif "linux" in ua:   os = "Linux"
+    else:                 os = "Other"
+    return {"device": device, "browser": browser, "os": os}
+
+
+@router.post("/track")
+async def track_visit(request: Request, body: dict, db: AsyncSession = Depends(get_db)):
+    """Track a page visit."""
+    try:
+        ua      = request.headers.get("user-agent", "")
+        ip      = request.headers.get("x-forwarded-for", request.client.host or "")
+        ip_hash = hashlib.sha256(ip.encode()).hexdigest()[:16]
+        parsed  = parse_user_agent(ua)
+
+        visit = PageVisit(
+            path       = body.get("path", "/")[:500],
+            referrer   = body.get("referrer", "")[:500],
+            user_agent = ua[:500],
+            device     = parsed["device"],
+            browser    = parsed["browser"],
+            os         = parsed["os"],
+            ip_hash    = ip_hash,
+        )
+        db.add(visit)
+
+        # Also increment blog post views
+        if body.get("post_id"):
+            await db.execute(
+                text("UPDATE blog_posts SET views = COALESCE(views, 0) + 1 WHERE id = :id"),
+                {"id": body["post_id"]}
+            )
+
+        await db.commit()
+        return {"ok": True}
+    except Exception as e:
+        return {"ok": False}
+
+
+@router.get("/analytics")
+async def get_analytics(days: int = 30, db: AsyncSession = Depends(get_db), 
+    from_date: str = None, to_date: str = None):
+    """Get traffic analytics for admin."""
+    if from_date and to_date:
+        try:
+            cutoff   = datetime.strptime(from_date, "%Y-%m-%d")
+            end_date = datetime.strptime(to_date, "%Y-%m-%d") + timedelta(days=1)
+        except:
+            cutoff   = datetime.utcnow() - timedelta(days=days)
+            end_date = datetime.utcnow() + timedelta(days=1)
+    else:
+        cutoff   = datetime.utcnow() - timedelta(days=days)
+        end_date = datetime.utcnow() + timedelta(days=1)
+
+    # Total visits
+    total = await db.execute(
+        select(func.count(PageVisit.id)).where(PageVisit.created_at >= cutoff, PageVisit.created_at <= end_date)
+    )
+    total_visits = total.scalar() or 0
+
+    # Unique visitors (by ip_hash)
+    unique = await db.execute(
+        select(func.count(func.distinct(PageVisit.ip_hash))).where(PageVisit.created_at >= cutoff, PageVisit.created_at <= end_date)
+    )
+    unique_visitors = unique.scalar() or 0
+
+    # Top pages
+    pages = await db.execute(
+        select(PageVisit.path, func.count(PageVisit.id).label("count"))
+        .where(PageVisit.created_at >= cutoff, PageVisit.created_at <= end_date)
+        .group_by(PageVisit.path)
+        .order_by(func.count(PageVisit.id).desc())
+        .limit(10)
+    )
+    top_pages = [{"path": r.path, "count": r.count} for r in pages]
+
+    # Referrers
+    refs = await db.execute(
+        select(PageVisit.referrer, func.count(PageVisit.id).label("count"))
+        .where(PageVisit.created_at >= cutoff, PageVisit.referrer != "")
+        .group_by(PageVisit.referrer)
+        .order_by(func.count(PageVisit.id).desc())
+        .limit(10)
+    )
+    referrers = [{"referrer": r.referrer or "Direct", "count": r.count} for r in refs]
+
+    # Devices
+    devices = await db.execute(
+        select(PageVisit.device, func.count(PageVisit.id).label("count"))
+        .where(PageVisit.created_at >= cutoff, PageVisit.created_at <= end_date)
+        .group_by(PageVisit.device)
+        .order_by(func.count(PageVisit.id).desc())
+    )
+    device_stats = [{"device": r.device, "count": r.count} for r in devices]
+
+    # Browsers
+    browsers = await db.execute(
+        select(PageVisit.browser, func.count(PageVisit.id).label("count"))
+        .where(PageVisit.created_at >= cutoff, PageVisit.created_at <= end_date)
+        .group_by(PageVisit.browser)
+        .order_by(func.count(PageVisit.id).desc())
+    )
+    browser_stats = [{"browser": r.browser, "count": r.count} for r in browsers]
+
+    # OS
+    os_stats_q = await db.execute(
+        select(PageVisit.os, func.count(PageVisit.id).label("count"))
+        .where(PageVisit.created_at >= cutoff, PageVisit.created_at <= end_date)
+        .group_by(PageVisit.os)
+        .order_by(func.count(PageVisit.id).desc())
+    )
+    os_stats = [{"os": r.os, "count": r.count} for r in os_stats_q]
+
+    # Daily visits (last 30 days)
+    from sqlalchemy import literal_column
+    daily = await db.execute(
+        select(
+            func.date_trunc(literal_column("'day'"), PageVisit.created_at).label("day"),
+            func.count(PageVisit.id).label("count")
+        )
+        .where(PageVisit.created_at >= cutoff, PageVisit.created_at <= end_date)
+        .group_by(func.date_trunc(literal_column("'day'"), PageVisit.created_at))
+        .order_by(func.date_trunc(literal_column("'day'"), PageVisit.created_at))
+    )
+    daily_visits = [{"day": str(r.day)[:10], "count": r.count} for r in daily]
+
+    # Top blog posts
+    top_posts = await db.execute(
+        select(BlogPost.id, BlogPost.title, BlogPost.views, BlogPost.slug)
+        .where(BlogPost.status == "published")
+        .order_by(BlogPost.views.desc())
+        .limit(10)
+    )
+    posts_stats = [{"id": r.id, "title": r.title, "views": r.views or 0, "slug": r.slug} for r in top_posts]
+
+    return {
+        "total_visits":    total_visits,
+        "unique_visitors": unique_visitors,
+        "top_pages":       top_pages,
+        "referrers":       referrers,
+        "devices":         device_stats,
+        "browsers":        browser_stats,
+        "os":              os_stats,
+        "daily":           daily_visits,
+        "top_posts":       posts_stats,
+    }

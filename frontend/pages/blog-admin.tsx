@@ -41,7 +41,7 @@ function VisualToolbar({ onInsert }: { onInsert: (b:string,a:string)=>void }) {
 function BlogAdminContent() {
   const [authed, setAuthed]   = useState(false);
   const [key, setKey]         = useState("");
-  const [tab, setTab]         = useState<"posts"|"ads"|"settings">("posts");
+  const [tab, setTab]         = useState<"posts"|"ads"|"settings"|"analytics">("posts");
   const [posts, setPosts]     = useState<any[]>([]);
   const [total, setTotal]     = useState(0);
   const [editing, setEditing] = useState<any>(null);
@@ -76,6 +76,22 @@ function BlogAdminContent() {
     incontent_5_para: "15", incontent_5_code: "",
   });
 
+  const [analytics, setAnalytics] = useState<any>(null);
+  const [analyticsLoading, setAnalyticsLoading] = useState(false);
+  const [analyticsDays, setAnalyticsDays] = useState(30);
+  const [customRange, setCustomRange]     = useState(false);
+  const [dateFrom, setDateFrom]           = useState("");
+  const [dateTo, setDateTo]               = useState("");
+
+  async function fetchAnalytics(days = 30) {
+    setAnalyticsLoading(true);
+    try {
+      const res = await fetch(`${API}/blog/analytics?days=${days}`, { headers: authHeaders() });
+      const data = await res.json();
+      setAnalytics(data);
+    } finally { setAnalyticsLoading(false); }
+  }
+
   const [settings, setSettings] = useState({
     posts_per_page: "9", posts_per_category: "9", posts_per_tag: "9",
     show_author: "true", show_date: "true", show_views: "true",
@@ -94,7 +110,7 @@ function BlogAdminContent() {
     } catch { return false; }
   }
 
-  useEffect(() => { if (authed) { fetchPosts(); fetchAds(); fetchSettings(); } }, [authed, filter]);
+  useEffect(() => { if (authed) { fetchPosts(); fetchAds(); fetchSettings(); fetchAnalytics(); } }, [authed, filter]);
 
   async function fetchPosts() {
     const params = filter !== "all" ? `?status=${filter}` : "";
@@ -283,7 +299,7 @@ function BlogAdminContent() {
         <div style={{ fontWeight:700, fontSize:14, color:T.white }}>Blog Admin</div>
         {!showForm && (
           <div style={{ display:"flex", gap:2, marginLeft:8 }}>
-            {(["posts","ads","settings"] as const).map(t => (
+            {(["posts","ads","settings","analytics"] as const).map(t => (
               <button key={t} onClick={() => setTab(t)}
                 style={{ padding:"6px 12px", background:tab===t?T.goldBg:"none", border:`1px solid ${tab===t?T.gold+"40":"transparent"}`, borderRadius:8, fontSize:12, color:tab===t?T.gold:T.muted, cursor:"pointer", textTransform:"capitalize" as const }}>
                 {t}
