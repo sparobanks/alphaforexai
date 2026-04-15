@@ -52,11 +52,17 @@ class User(Base):
     oanda_account_id    = Column(String(100), nullable=True)
     oanda_api_key       = Column(String(200), nullable=True)
     oanda_is_live       = Column(Boolean, default=False)
+    deriv_app_id        = Column(String(50), nullable=True)
+    deriv_api_token     = Column(String(200), nullable=True)
+    deriv_enabled       = Column(Boolean, default=False)
     auto_trade_enabled  = Column(Boolean, default=False)
     auto_trade_risk_pct = Column(Float, default=1.0)
     oanda_account_id    = Column(String(100), nullable=True)
     oanda_api_key       = Column(String(200), nullable=True)
     oanda_is_live       = Column(Boolean, default=False)
+    deriv_app_id        = Column(String(50), nullable=True)
+    deriv_api_token     = Column(String(200), nullable=True)
+    deriv_enabled       = Column(Boolean, default=False)
     reset_token_expiry = Column(DateTime, nullable=True)
 
 
@@ -550,13 +556,16 @@ class AutoTradeSettings(BaseModel):
 
 @router.get("/auto-trade/settings")
 async def get_auto_trade_settings(user: User = Depends(get_current_user)):
-    # Auto-trade available to VIP - enforced on frontend
     return {
         "auto_trade_enabled":  user.auto_trade_enabled,
         "auto_trade_risk_pct": user.auto_trade_risk_pct,
         "oanda_account_id":    user.oanda_account_id,
         "oanda_is_live":       user.oanda_is_live,
         "has_api_key":         bool(user.oanda_api_key),
+        "deriv_app_id":        user.deriv_app_id or "",
+        "deriv_api_token":     user.deriv_api_token or "",
+        "deriv_enabled":       user.deriv_enabled or False,
+        "has_deriv_token":     bool(user.deriv_api_token),
     }
 
 
@@ -756,3 +765,16 @@ export default function Document() {
 
     logger.info("Document updated and rebuild triggered")
     return {"ok": True}
+
+
+@router.post("/auto-trade/test-deriv")
+async def test_deriv_connection(user: User = Depends(get_current_user)):
+    if user.tier not in ["vip"]:
+        raise HTTPException(status_code=403, detail="VIP only")
+    if not user.deriv_app_id or not user.deriv_api_token:
+        raise HTTPException(status_code=400, detail="No Deriv credentials saved")
+    from app.trading.deriv_trade import test_deriv_connection
+    return await test_deriv_connection(user.deriv_app_id, user.deriv_api_token)
+
+
+

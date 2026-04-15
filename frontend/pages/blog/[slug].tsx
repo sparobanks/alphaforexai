@@ -4,6 +4,139 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { Nav, Footer, T, AuthProvider } from "../../components/_layout";
 
+const API_BASE = "https://alphaforexai.com/api/v1";
+
+// ── Shortcode: [live_signals] ─────────────────────────────────────────────────
+function LiveSignalsWidget() {
+  const [signals, setSignals] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`${API_BASE}/signals/public/live`)
+      .then(r => r.json())
+      .then(data => setSignals(Array.isArray(data) ? data.slice(0, 3) : []))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <div style={{ padding: "16px", textAlign: "center" as const, color: T.muted, fontSize: 13 }}>Loading signals...</div>;
+
+  return (
+    <div style={{ background: T.card, border: `1px solid ${T.border}`, borderRadius: 12, padding: "16px", margin: "24px 0" }}>
+      <div style={{ fontSize: 11, color: T.gold, fontWeight: 600, textTransform: "uppercase" as const, letterSpacing: "0.08em", marginBottom: 12 }}>
+        ● Live Signals
+      </div>
+      {signals.length === 0 ? (
+        <div style={{ fontSize: 13, color: T.muted, textAlign: "center" as const, padding: "12px" }}>No active signals right now</div>
+      ) : signals.map(s => (
+        <div key={s.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 0", borderBottom: `1px solid ${T.border}`, flexWrap: "wrap" as const }}>
+          <span style={{ fontWeight: 700, color: s.direction === "BUY" ? T.green : T.red, fontSize: 13, minWidth: 36 }}>{s.direction}</span>
+          <span style={{ fontWeight: 600, color: T.white, fontSize: 13 }}>{s.pair}</span>
+          <span style={{ background: "#22c55e20", color: "#22c55e", fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 99 }}>● LIVE</span>
+          <span style={{ fontSize: 12, color: T.muted, fontFamily: "monospace" }}>{s.entry_price?.toFixed(s.pair?.includes("XAU") || s.pair?.includes("JPY") ? 2 : 5)}</span>
+          <div style={{ marginLeft: "auto", display: "flex", gap: 8 }}>
+            <div style={{ background: "#0f0f0f", borderRadius: 6, padding: "4px 10px", textAlign: "center" as const }}>
+              <div style={{ fontSize: 9, color: T.muted, textTransform: "uppercase" as const }}>SL</div>
+              <div style={{ fontSize: 11, fontWeight: 600, color: T.red, filter: "blur(4px)", userSelect: "none" as const }}>1.2345</div>
+            </div>
+            <div style={{ background: "#0f0f0f", borderRadius: 6, padding: "4px 10px", textAlign: "center" as const }}>
+              <div style={{ fontSize: 9, color: T.muted, textTransform: "uppercase" as const }}>TP</div>
+              <div style={{ fontSize: 11, fontWeight: 600, color: T.green, filter: "blur(4px)", userSelect: "none" as const }}>1.2345</div>
+            </div>
+          </div>
+        </div>
+      ))}
+      <div style={{ marginTop: 12, display: "flex", gap: 8, justifyContent: "center" }}>
+        <a href="/register" style={{ fontSize: 12, fontWeight: 700, color: T.black, background: `linear-gradient(135deg, ${T.gold} 0%, #e8c97e 100%)`, padding: "7px 16px", borderRadius: 6, textDecoration: "none" }}>Get Full Signals Free</a>
+        <a href="/dashboard" style={{ fontSize: 12, color: T.gold, background: T.goldBg, border: `1px solid ${T.gold}30`, padding: "7px 16px", borderRadius: 6, textDecoration: "none" }}>Dashboard →</a>
+      </div>
+    </div>
+  );
+}
+
+// ── Shortcode: [recent_results] ────────────────────────────────────────────────
+function RecentResultsWidget() {
+  const [signals, setSignals] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`${API_BASE}/signals/public/recent`)
+      .then(r => r.json())
+      .then(data => setSignals(Array.isArray(data) ? data.filter((s: any) => s.status !== "EXPIRED").slice(0, 10) : []))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <div style={{ padding: "16px", textAlign: "center" as const, color: T.muted, fontSize: 13 }}>Loading results...</div>;
+
+  const wins  = signals.filter(s => s.status === "TP_HIT").length;
+  const total = signals.length;
+  const pips  = signals.reduce((sum, s) => sum + (s.pnl_pips || 0), 0);
+  const dp    = (pair: string) => pair?.includes("XAU") || pair?.includes("JPY") ? 2 : 5;
+
+  return (
+    <div style={{ background: T.card, border: `1px solid ${T.border}`, borderRadius: 12, padding: "16px", margin: "24px 0" }}>
+      <div style={{ fontSize: 11, color: T.gold, fontWeight: 600, textTransform: "uppercase" as const, letterSpacing: "0.08em", marginBottom: 12 }}>
+        Recent Signal Results
+      </div>
+      {total > 0 && (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 14 }}>
+          {[
+            { label: "Win Rate", value: `${Math.round((wins/total)*100)}%`, color: wins/total >= 0.5 ? T.green : T.red },
+            { label: "Total Pips", value: `${pips > 0 ? "+" : ""}${Math.round(pips)}`, color: pips >= 0 ? T.green : T.red },
+            { label: "Signals", value: `${total}`, color: T.muted },
+          ].map(s => (
+            <div key={s.label} style={{ background: "#0f0f0f", borderRadius: 8, padding: "10px", textAlign: "center" as const }}>
+              <div style={{ fontSize: 16, fontWeight: 700, color: s.color }}>{s.value}</div>
+              <div style={{ fontSize: 10, color: T.muted, marginTop: 3 }}>{s.label}</div>
+            </div>
+          ))}
+        </div>
+      )}
+      {signals.length === 0 ? (
+        <div style={{ fontSize: 13, color: T.muted, textAlign: "center" as const }}>No closed signals yet</div>
+      ) : signals.map((s, i) => {
+        const isWin = s.status === "TP_HIT";
+        const color = isWin ? T.green : T.red;
+        return (
+          <div key={s.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: i < signals.length-1 ? `1px solid ${T.border}` : "none", flexWrap: "wrap" as const }}>
+            <span style={{ fontWeight: 700, color: s.direction === "BUY" ? T.green : T.red, fontSize: 12, minWidth: 32 }}>{s.direction}</span>
+            <span style={{ fontWeight: 600, color: T.white, fontSize: 12 }}>{s.pair}</span>
+            <span style={{ background: color + "20", color, fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 99 }}>{isWin ? "✓ TP" : "✗ SL"}</span>
+            <span style={{ fontSize: 11, color: T.muted, fontFamily: "monospace" }}>{s.entry_price?.toFixed(dp(s.pair))}</span>
+            <span style={{ marginLeft: "auto", fontWeight: 700, fontSize: 12, color }}>{isWin ? "+" : ""}{s.pnl_pips}p</span>
+          </div>
+        );
+      })}
+      <div style={{ marginTop: 12, textAlign: "center" as const }}>
+        <a href="/register" style={{ fontSize: 12, color: T.gold, textDecoration: "none", fontWeight: 600 }}>Get live signals free →</a>
+      </div>
+    </div>
+  );
+}
+
+// ── Shortcode processor ────────────────────────────────────────────────────────
+function processShortcodes(html: string): { parts: Array<{ type: "html" | "live_signals" | "recent_results"; content: string }> } {
+  const parts: Array<{ type: "html" | "live_signals" | "recent_results"; content: string }> = [];
+  const regex = /\[(live_signals|recent_results)\]/g;
+  let last = 0;
+  let match;
+
+  while ((match = regex.exec(html)) !== null) {
+    if (match.index > last) {
+      parts.push({ type: "html", content: html.slice(last, match.index) });
+    }
+    parts.push({ type: match[1] as "live_signals" | "recent_results", content: "" });
+    last = match.index + match[0].length;
+  }
+
+  if (last < html.length) {
+    parts.push({ type: "html", content: html.slice(last) });
+  }
+
+  return { parts };
+}
+
 const API = "https://alphaforexai.com/api/v1";
 
 function AdSlot({ code, label }: { code?: string; label: string }) {
@@ -28,7 +161,7 @@ function renderMarkdown(content: string): string {
     .replace(/^- (.+)$/gm,   '<li style="margin:6px 0;color:#888880;padding-left:4px">$1</li>')
     .replace(/(<li[^>]*>.*<\/li>\n?)+/g,'<ul style="margin:14px 0;padding-left:20px">$&</ul>')
     .replace(/^\d+\. (.+)$/gm,'<li style="margin:6px 0;color:#888880">$1</li>')
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" style="color:#c9a84c;text-decoration:underline" target="_blank" rel="noopener">$1</a>')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" style="color:#c9a84c;text-decoration:underline;font-weight:500" target="_blank" rel="noopener">$1</a>')
     .replace(/!\[([^\]]*)\]\(([^)]+)\)/g,'<img src="$2" alt="$1" style="max-width:100%;border-radius:8px;margin:16px 0" />')
     .replace(/^(?!<[hulbipqci])(.*\S.*)$/gm,'<p style="margin:0 0 14px;color:#f0f0f0;line-height:1.8;font-size:16px">$1</p>')
     .replace(/\n{2,}/g,"");
@@ -125,16 +258,46 @@ function PostContent() {
     "@type": "BlogPosting",
     "headline": post.title,
     "description": seoDesc,
-    "author": { "@type": "Organization", "name": post.author||"AlphaForexAI" },
-    "publisher": { "@type": "Organization", "name": "AlphaForexAI", "url": "https://alphaforexai.com",
-      "logo": { "@type": "ImageObject", "url": "https://alphaforexai.com/logo.png" } },
+    "author": {
+      "@type": "Organization",
+      "name": post.author || "AlphaForexAI",
+      "url": "https://alphaforexai.com"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "AlphaForexAI",
+      "url": "https://alphaforexai.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://alphaforexai.com/logo.png",
+        "width": 512,
+        "height": 512
+      }
+    },
     "datePublished": post.published_at,
-    "dateModified": post.updated_at||post.published_at,
+    "dateModified": post.updated_at || post.published_at,
     "url": postUrl,
-    "mainEntityOfPage": { "@type": "WebPage", "@id": postUrl },
-    ...(post.cover_image && !post.cover_image.startsWith("data:") ? {
-      "image": { "@type": "ImageObject", "url": post.cover_image, "width": 1200, "height": 630 }
-    } : {}),
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": postUrl
+    },
+    "image": post.cover_image && !post.cover_image.startsWith("data:")
+      ? {
+          "@type": "ImageObject",
+          "url": post.cover_image,
+          "width": 1200,
+          "height": 630
+        }
+      : {
+          "@type": "ImageObject",
+          "url": "https://alphaforexai.com/og-default.png",
+          "width": 1200,
+          "height": 630
+        },
+    "keywords": Array.isArray(post.tags) ? post.tags.join(", ") : (post.tags || "forex, trading, signals"),
+    "articleSection": post.category || "Forex Trading",
+    "inLanguage": "en-GB",
+    "isAccessibleForFree": true,
   });
 
   return (
@@ -150,11 +313,9 @@ function PostContent() {
         <meta property="og:type" content="article" />
         <meta property="og:site_name" content="AlphaForexAI" />
         <meta property="og:locale" content="en_GB" />
-        {post.cover_image && !post.cover_image.startsWith("data:") && <>
-          <meta property="og:image" content={post.cover_image} />
-          <meta property="og:image:width" content="1200" />
-          <meta property="og:image:height" content="630" />
-        </>}
+        <meta property="og:image" content={post.cover_image && !post.cover_image.startsWith("data:") ? post.cover_image : "https://alphaforexai.com/og-default.png"} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
         <meta property="article:published_time" content={post.published_at} />
         <meta property="article:modified_time" content={post.updated_at||post.published_at} />
         <meta property="article:author" content={post.author||"AlphaForexAI"} />
@@ -163,7 +324,7 @@ function PostContent() {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={seoTitle} />
         <meta name="twitter:description" content={seoDesc} />
-        {post.cover_image && !post.cover_image.startsWith("data:") && <meta name="twitter:image" content={post.cover_image} />}
+        <meta name="twitter:image" content={post.cover_image && !post.cover_image.startsWith("data:") ? post.cover_image : "https://alphaforexai.com/og-default.png"} />
         <link rel="canonical" href={postUrl} />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
       </Head>
@@ -203,8 +364,22 @@ function PostContent() {
 
         <AdSlot code={adCodes.blog_ad_before_post} label="Before Post" />
 
-        <div style={{ fontSize:16, lineHeight:1.8, color:T.white }}
-          dangerouslySetInnerHTML={{ __html: renderedContent }} />
+        {(() => {
+          const { parts } = processShortcodes(renderedContent);
+          return parts.map((part, i) => {
+            if (part.type === "live_signals")   return <LiveSignalsWidget key={i} />;
+            if (part.type === "recent_results") return <RecentResultsWidget key={i} />;
+            return (
+              <div key={i}>
+                <style>{`
+                  .blog-content a { color: #c9a84c !important; text-decoration: underline; font-weight: 500; }
+                  .blog-content a:hover { color: #e8c97e !important; }
+                `}</style>
+                <div className="blog-content" style={{ fontSize:16, lineHeight:1.8, color:T.white }} dangerouslySetInnerHTML={{ __html: part.content }} />
+              </div>
+            );
+          });
+        })()}
 
         <AdSlot code={adCodes.blog_ad_after_post} label="After Post" />
 

@@ -3,15 +3,17 @@ import React from "react";
 import { Nav, Footer, T, GoldButton, GhostButton, Card, AuthProvider, SeoHead } from "../components/_layout";
 
 function LiveSignalPreview() {
-  const [signals, setSignals] = React.useState<any[]>([]);
+  const [signals, setSignals]   = React.useState<any[]>([]);
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
 
   React.useEffect(() => {
-    // Fetch latest open signals (public endpoint - no auth needed)
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+
     fetch("https://alphaforexai.com/api/v1/signals/public/live")
       .then(r => r.json())
       .then(data => {
         const items = Array.isArray(data) ? data.slice(0, 2) : [];
-        // If no live signals, fall back to recent closed
         if (items.length === 0) {
           return fetch("https://alphaforexai.com/api/v1/signals/public/recent")
             .then(r => r.json())
@@ -51,8 +53,17 @@ function LiveSignalPreview() {
             ))}
           </div>
           <div style={{ marginTop: 10, background: T.goldBg, border: `1px solid ${T.gold}30`, borderRadius: 8, padding: "8px 12px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, flexWrap: "wrap" as const }}>
-            <span style={{ fontSize: 12, color: T.gold }}>🔒 Register free to see SL & TP levels</span>
-            <a href="/register" style={{ fontSize: 12, fontWeight: 700, color: T.black, background: `linear-gradient(135deg, ${T.gold} 0%, #e8c97e 100%)`, padding: "5px 14px", borderRadius: 6, textDecoration: "none" }}>Sign Up Free</a>
+            {isLoggedIn ? (
+              <>
+                <span style={{ fontSize: 12, color: T.gold }}>✓ You are signed in — view full details on your dashboard</span>
+                <a href="/dashboard" style={{ fontSize: 12, fontWeight: 700, color: T.black, background: `linear-gradient(135deg, ${T.gold} 0%, #e8c97e 100%)`, padding: "5px 14px", borderRadius: 6, textDecoration: "none" }}>Go to Dashboard →</a>
+              </>
+            ) : (
+              <>
+                <span style={{ fontSize: 12, color: T.gold }}>🔒 Register free to see SL & TP levels</span>
+                <a href="/register" style={{ fontSize: 12, fontWeight: 700, color: T.black, background: `linear-gradient(135deg, ${T.gold} 0%, #e8c97e 100%)`, padding: "5px 14px", borderRadius: 6, textDecoration: "none" }}>Sign Up Free</a>
+              </>
+            )}
           </div>
         </div>
       ))}

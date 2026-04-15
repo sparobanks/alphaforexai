@@ -1,4 +1,5 @@
 "use client";
+import Head from "next/head";
 import { useState, useEffect } from "react";
 import { Nav, Footer, T, AuthProvider, SeoHead } from "../../components/_layout";
 
@@ -90,6 +91,20 @@ function BlogContent() {
   return (
     <div style={{ background: T.black, color: T.white, minHeight: "100vh", fontFamily: "system-ui, sans-serif" }}>
       <SeoHead title="Forex Trading Blog" description="Expert forex trading insights, AI signal analysis, market education and trading strategies from AlphaForexAI." path="/blog" />
+      <Head>
+        <meta property="og:title" content="Forex Trading Blog | AlphaForexAI" />
+        <meta property="og:description" content="Expert forex trading insights, AI signal analysis, market education and trading strategies from AlphaForexAI." />
+        <meta property="og:url" content="https://alphaforexai.com/blog" />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="AlphaForexAI" />
+        <meta property="og:image" content="https://alphaforexai.com/og-default.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Forex Trading Blog | AlphaForexAI" />
+        <meta name="twitter:description" content="Expert forex trading insights, AI signal analysis, market education and trading strategies from AlphaForexAI." />
+        <meta name="twitter:image" content="https://alphaforexai.com/og-default.png" />
+      </Head>
       <Nav />
 
       {/* Header */}

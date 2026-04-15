@@ -291,6 +291,17 @@ async def delete_media(media_id: int, db: AsyncSession = Depends(get_db)):
     item   = result.scalar_one_or_none()
     if not item:
         raise HTTPException(status_code=404, detail="Not found")
+
+    # Delete file from disk if it is a local upload
+    if item.data and item.data.startswith("https://alphaforexai.com/uploads/"):
+        filename = item.data.split("/uploads/")[-1]
+        filepath = f"/frontend/public/uploads/{filename}"
+        try:
+            if os.path.exists(filepath):
+                os.remove(filepath)
+        except Exception as e:
+            pass  # Don't fail if file missing
+
     await db.delete(item)
     await db.commit()
     return {"ok": True}
@@ -317,8 +328,10 @@ async def upload_media_file(body: dict, db: AsyncSession = Depends(get_db)):
         b64  = data
         ext  = filename.rsplit(".", 1)[-1] if "." in filename else "jpg"
 
-    # Generate unique filename
-    unique_name = f"{uuid.uuid4().hex}.{ext}"
+    # Keep original filename exactly
+    clean_name = filename.rsplit(".", 1)[0].replace(" ", "-").lower()
+    clean_name = "".join(c for c in clean_name if c.isalnum() or c == "-")
+    unique_name = f"{clean_name}.{ext}"
     os.makedirs(UPLOAD_DIR, exist_ok=True)
     filepath = os.path.join(UPLOAD_DIR, unique_name)
 

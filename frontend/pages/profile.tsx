@@ -118,6 +118,40 @@ function AutoTradePanel({ user, showMsg }: any) {
           </div>
         </div>
 
+        {/* Deriv section */}
+        <div style={{ background: T.card, border: `1px solid ${T.border}`, borderRadius: 12, padding: "20px" }}>
+          <div style={{ fontSize: 12, color: T.gold, fontWeight: 600, marginBottom: 16, textTransform: "uppercase" as const, letterSpacing: "0.05em" }}>Deriv Account</div>
+          <div style={{ display: "flex", flexDirection: "column" as const, gap: 12 }}>
+            <div>
+              <label style={labelStyle}>Deriv App ID</label>
+              <input value={settings.deriv_app_id || ""} onChange={e => setSettings((s: any) => ({...s, deriv_app_id: e.target.value}))} placeholder="e.g. 1089" style={inputStyle} />
+              <div style={{ fontSize: 11, color: T.muted2, marginTop: 3 }}>Get your App ID from <a href="https://app.deriv.com/account/api-token" target="_blank" style={{ color: T.gold }}>app.deriv.com/account/api-token</a></div>
+            </div>
+            <div>
+              <label style={labelStyle}>Deriv API Token</label>
+              <input type="password" value={settings.deriv_api_token || ""} onChange={e => setSettings((s: any) => ({...s, deriv_api_token: e.target.value}))} placeholder="Paste your Deriv API token" style={inputStyle} />
+            </div>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <input type="checkbox" id="deriv_enabled" checked={settings.deriv_enabled || false}
+                  onChange={e => setSettings((s: any) => ({...s, deriv_enabled: e.target.checked}))} />
+                <label htmlFor="deriv_enabled" style={{ fontSize: 13, color: T.muted, cursor: "pointer" }}>Enable Deriv Auto-Trading</label>
+              </div>
+              <button type="button" onClick={async () => {
+                setTesting(true);
+                try {
+                  const res = await fetch(`${API}/auth/auto-trade/test-deriv`, { method: "POST", headers: authHeaders() });
+                  const data = await res.json();
+                  if (data.ok) showMsg(`✓ Deriv connected! Balance: ${data.currency} ${parseFloat(data.balance).toFixed(2)}`, true);
+                  else showMsg(`Deriv failed: ${data.error}`, false);
+                } finally { setTesting(false); }
+              }} disabled={testing} style={{ padding: "7px 14px", background: "#111", border: `1px solid ${T.border}`, borderRadius: 8, fontSize: 12, color: T.white, cursor: "pointer" }}>
+                {testing ? "Testing..." : "Test Deriv"}
+              </button>
+            </div>
+          </div>
+        </div>
+
         <button type="submit" disabled={loading}
           style={{ padding: "12px", background: `linear-gradient(135deg, ${T.gold} 0%, #e8c97e 100%)`, color: T.black, border: "none", borderRadius: 8, fontSize: 14, fontWeight: 700, cursor: "pointer" }}>
           {loading ? "Saving..." : "Save Auto-Trade Settings"}

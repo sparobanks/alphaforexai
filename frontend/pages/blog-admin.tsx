@@ -434,15 +434,23 @@ function BlogAdminContent() {
                         const r = new FileReader();
                         r.onload = async ev => {
                           const data = ev.target?.result as string;
-                          setForm((f:any) => ({...f, cover_image: data}));
-                          // Save to library
                           try {
-                            await fetch(`${API}/blog/media`, {
+                            const res = await fetch(`${API}/blog/media/upload`, {
                               method:"POST", headers: authHeaders(),
                               body: JSON.stringify({ filename: file.name, data, mime_type: file.type })
                             });
+                            const result = await res.json();
+                            if (result.url) {
+                              setForm((f:any) => ({...f, cover_image: result.url}));
+                              setMsg("✓ Image uploaded");
+                            } else {
+                              setForm((f:any) => ({...f, cover_image: data}));
+                              setMsg("Upload failed - using local preview");
+                            }
                             loadLibrary();
-                          } catch {}
+                          } catch {
+                            setForm((f:any) => ({...f, cover_image: data}));
+                          }
                         };
                         r.readAsDataURL(file);
                       }} style={{ display:"none" }} />
@@ -459,9 +467,25 @@ function BlogAdminContent() {
                       ) : (
                         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(80px, 1fr))", gap:8 }}>
                           {mediaLibrary.map((img:any) => (
-                            <div key={img.id} onClick={() => setForm((f:any) => ({...f, cover_image: img.data}))}
-                              style={{ cursor:"pointer", borderRadius:8, overflow:"hidden", border:`2px solid ${form.cover_image===img.data?T.gold:T.border}`, position:"relative" as const }}>
-                              <img src={img.data} alt={img.filename} style={{ width:"100%", height:70, objectFit:"cover" as const, display:"block" }} />
+                            <div key={img.id} style={{ position:"relative" as const, borderRadius:8, overflow:"hidden", border:`2px solid ${form.cover_image===img.data?T.gold:T.border}` }}>
+                              <img src={img.data} alt={img.filename}
+                                onClick={() => setForm((f:any) => ({...f, cover_image: img.data}))}
+                                style={{ width:"100%", height:70, objectFit:"cover" as const, display:"block", cursor:"pointer" }} />
+                              <button
+                                type="button"
+                                onClick={async e => {
+                                  e.stopPropagation();
+                                  if (!confirm("Delete this image?")) return;
+                                  try {
+                                    await fetch(`${API}/blog/media/${img.id}`, { method:"DELETE", headers: authHeaders() });
+                                    setMediaLibrary((prev:any[]) => prev.filter((m:any) => m.id !== img.id));
+                                    if (form.cover_image === img.data) setForm((f:any) => ({...f, cover_image: ""}));
+                                    setMsg("✓ Image deleted");
+                                  } catch { setMsg("Delete failed"); }
+                                }}
+                                style={{ position:"absolute" as const, top:2, right:2, width:18, height:18, borderRadius:"50%", background:"rgba(0,0,0,0.8)", border:"1px solid #f87171", color:"#f87171", fontSize:10, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", lineHeight:1, padding:0 }}>
+                                ✕
+                              </button>
                             </div>
                           ))}
                         </div>
