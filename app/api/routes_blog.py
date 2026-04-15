@@ -540,3 +540,11 @@ async def get_analytics(days: int = 30, db: AsyncSession = Depends(get_db),
         "daily":           daily_visits,
         "top_posts":       posts_stats,
     }
+
+
+@router.delete("/analytics/reset")
+async def reset_analytics(db: AsyncSession = Depends(get_db)):
+    """Reset all traffic analytics data."""
+    await db.execute(text("DELETE FROM page_visits"))
+    await db.commit()
+    return {"ok": True, "message": "Analytics data cleared"}

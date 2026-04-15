@@ -681,6 +681,105 @@ function BlogAdminContent() {
             </button>
           </form>
         )}
+
+        {/* ANALYTICS */}
+        {!showForm && tab==="analytics" && (
+          <div>
+            <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:20, flexWrap:"wrap" as const }}>
+              <div style={{ fontWeight:600, fontSize:15, color:T.white }}>Traffic Analytics</div>
+              <div style={{ flex:1 }} />
+              {[{label:"Today",days:1},{label:"Yesterday",days:2},{label:"7D",days:7},{label:"1M",days:30},{label:"3M",days:90},{label:"6M",days:180},{label:"1Y",days:365},{label:"All",days:3650}].map(d=>(
+                <button key={d.days} onClick={()=>{
+                  if(d.label==="Yesterday"){const y=new Date();y.setDate(y.getDate()-1);const s=y.toISOString().split("T")[0];setCustomRange(true);setDateFrom(s);setDateTo(s);setAnalyticsLoading(true);fetch(`${API}/blog/analytics?from=${s}&to=${s}`,{headers:authHeaders()}).then(r=>r.json()).then(setAnalytics).finally(()=>setAnalyticsLoading(false));}
+                  else if(d.label==="Today"){const s=new Date().toISOString().split("T")[0];setCustomRange(true);setDateFrom(s);setDateTo(s);setAnalyticsLoading(true);fetch(`${API}/blog/analytics?from=${s}&to=${s}`,{headers:authHeaders()}).then(r=>r.json()).then(setAnalytics).finally(()=>setAnalyticsLoading(false));}
+                  else{setAnalyticsDays(d.days);setCustomRange(false);fetchAnalytics(d.days);}
+                }} style={{padding:"5px 10px",background:analyticsDays===d.days&&!customRange?T.goldBg:"transparent",border:`1px solid ${analyticsDays===d.days&&!customRange?T.gold+"40":T.border}`,borderRadius:8,fontSize:11,color:analyticsDays===d.days&&!customRange?T.gold:T.muted,cursor:"pointer"}}>{d.label}</button>
+              ))}
+              <button onClick={()=>setCustomRange(r=>!r)} style={{padding:"5px 10px",background:customRange?T.goldBg:"transparent",border:`1px solid ${customRange?T.gold+"40":T.border}`,borderRadius:8,fontSize:11,color:customRange?T.gold:T.muted,cursor:"pointer"}}>Custom</button>
+              <button onClick={()=>fetchAnalytics(analyticsDays)} style={{padding:"5px 10px",background:T.card,border:`1px solid ${T.border}`,borderRadius:8,fontSize:11,color:T.muted,cursor:"pointer"}}>↻</button>
+              <button onClick={async()=>{
+                if(!confirm("Reset ALL analytics data? This cannot be undone.")) return;
+                await fetch(`${API}/blog/analytics/reset`,{method:"DELETE",headers:authHeaders()});
+                setAnalytics(null);
+                setMsg("✓ Analytics reset");
+              }} style={{padding:"5px 10px",background:"#1a0a0a",border:"1px solid #3a1a1a",borderRadius:8,fontSize:11,color:"#f87171",cursor:"pointer"}}>Reset</button>
+            </div>
+            {customRange&&(
+              <div style={{display:"flex",gap:10,alignItems:"center",marginBottom:16,flexWrap:"wrap" as const,padding:"12px 14px",background:T.card,border:`1px solid ${T.border}`,borderRadius:10}}>
+                <span style={{fontSize:12,color:T.muted}}>From:</span>
+                <input type="date" value={dateFrom} onChange={e=>setDateFrom(e.target.value)} style={{background:"#0f0f0f",border:`1px solid ${T.border}`,borderRadius:6,padding:"6px 10px",fontSize:12,color:T.white,colorScheme:"dark"}}/>
+                <span style={{fontSize:12,color:T.muted}}>To:</span>
+                <input type="date" value={dateTo} onChange={e=>setDateTo(e.target.value)} style={{background:"#0f0f0f",border:`1px solid ${T.border}`,borderRadius:6,padding:"6px 10px",fontSize:12,color:T.white,colorScheme:"dark"}}/>
+                <button onClick={async()=>{if(!dateFrom||!dateTo)return;setAnalyticsLoading(true);try{const r=await fetch(`${API}/blog/analytics?from=${dateFrom}&to=${dateTo}`,{headers:authHeaders()});setAnalytics(await r.json());}finally{setAnalyticsLoading(false);}}} style={{padding:"6px 14px",background:`linear-gradient(135deg,${T.gold} 0%,#e8c97e 100%)`,color:"#000",border:"none",borderRadius:6,fontSize:12,fontWeight:600,cursor:"pointer"}}>Apply</button>
+              </div>
+            )}
+            {analyticsLoading?(
+              <div style={{textAlign:"center" as const,padding:"48px",color:T.muted}}>Loading...</div>
+            ):!analytics?(
+              <div style={{textAlign:"center" as const,padding:"48px",color:T.muted}}>No data yet — visit your site to start tracking</div>
+            ):(
+              <div style={{display:"flex",flexDirection:"column" as const,gap:16}}>
+                <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit, minmax(140px, 1fr))",gap:12}}>
+                  {[{label:"Total Visits",value:analytics.total_visits,color:T.gold},{label:"Unique Visitors",value:analytics.unique_visitors,color:T.green}].map(s=>(
+                    <div key={s.label} style={{background:T.card,border:`1px solid ${T.border}`,borderRadius:10,padding:"16px",textAlign:"center" as const}}>
+                      <div style={{fontSize:28,fontWeight:700,color:s.color}}>{s.value}</div>
+                      <div style={{fontSize:11,color:T.muted,marginTop:4}}>{s.label}</div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit, minmax(280px, 1fr))",gap:14}}>
+                  {[
+                    {title:"Top Pages",data:analytics.top_pages,kF:(r:any)=>r.path,vF:(r:any)=>r.count},
+                    {title:"Referrers",data:analytics.referrers,kF:(r:any)=>r.referrer||"Direct",vF:(r:any)=>r.count},
+                    {title:"Devices",data:analytics.devices,kF:(r:any)=>r.device,vF:(r:any)=>r.count},
+                    {title:"Browsers",data:analytics.browsers,kF:(r:any)=>r.browser,vF:(r:any)=>r.count},
+                    {title:"OS",data:analytics.os,kF:(r:any)=>r.os,vF:(r:any)=>r.count},
+                  ].map(sec=>(
+                    <div key={sec.title} style={{background:T.card,border:`1px solid ${T.border}`,borderRadius:12,padding:"16px"}}>
+                      <div style={{fontSize:12,color:T.gold,fontWeight:600,textTransform:"uppercase" as const,letterSpacing:"0.05em",marginBottom:12}}>{sec.title}</div>
+                      {!(sec.data||[]).length?<div style={{fontSize:12,color:T.muted2}}>No data yet</div>
+                      :(sec.data||[]).map((r:any)=>{
+                        const tot=(sec.data||[]).reduce((s:number,x:any)=>s+sec.vF(x),0);
+                        const pct=tot>0?Math.round((sec.vF(r)/tot)*100):0;
+                        return(
+                          <div key={sec.kF(r)} style={{marginBottom:8}}>
+                            <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
+                              <span style={{fontSize:12,color:T.muted,maxWidth:"70%",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap" as const}}>{sec.kF(r)}</span>
+                              <span style={{fontSize:12,color:T.white,fontWeight:600}}>{sec.vF(r)} <span style={{color:T.muted2}}>({pct}%)</span></span>
+                            </div>
+                            <div style={{background:"#1a1a1a",borderRadius:3,height:4}}><div style={{background:T.gold,borderRadius:3,height:4,width:`${pct}%`}}/></div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ))}
+                </div>
+                <div style={{background:T.card,border:`1px solid ${T.border}`,borderRadius:12,padding:"16px"}}>
+                  <div style={{fontSize:12,color:T.gold,fontWeight:600,textTransform:"uppercase" as const,letterSpacing:"0.05em",marginBottom:12}}>Top Posts by Views</div>
+                  {!analytics.top_posts?.length?<div style={{fontSize:12,color:T.muted2}}>No views yet</div>
+                  :analytics.top_posts.map((p:any)=>(
+                    <div key={p.id} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 0",borderBottom:`1px solid ${T.border}`}}>
+                      <div style={{flex:1,fontSize:13,color:T.white,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap" as const}}>{p.title}</div>
+                      <a href={`/blog/${p.slug}`} target="_blank" style={{fontSize:11,color:T.muted,textDecoration:"none"}}>↗</a>
+                      <span style={{fontSize:12,fontWeight:600,color:T.gold}}>{p.views}</span>
+                    </div>
+                  ))}
+                </div>
+                {analytics.daily?.length>0&&(
+                  <div style={{background:T.card,border:`1px solid ${T.border}`,borderRadius:12,padding:"16px"}}>
+                    <div style={{fontSize:12,color:T.gold,fontWeight:600,textTransform:"uppercase" as const,letterSpacing:"0.05em",marginBottom:12}}>Daily Visits</div>
+                    <div style={{display:"flex",alignItems:"flex-end",gap:2,height:80}}>
+                      {analytics.daily.map((d:any)=>{const mx=Math.max(...analytics.daily.map((x:any)=>x.count));const h=mx>0?Math.max(4,Math.round((d.count/mx)*80)):4;return <div key={d.day} title={`${d.day}: ${d.count}`} style={{flex:1,background:T.gold,borderRadius:"2px 2px 0 0",height:h,opacity:0.8,minWidth:2}}/>;  })}
+                    </div>
+                    <div style={{display:"flex",justifyContent:"space-between",marginTop:4,fontSize:10,color:T.muted2}}>
+                      <span>{analytics.daily[0]?.day}</span><span>{analytics.daily[analytics.daily.length-1]?.day}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
