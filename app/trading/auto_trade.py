@@ -157,13 +157,19 @@ async def execute_signal_for_user(user: User, signal: dict) -> dict:
     if direction == "SELL":
         units = -units
 
+    # Round prices based on instrument precision
+    pip_size = PIP_SIZES.get(instrument, 0.0001)
+    if pip_size >= 0.1:      decimals = 2   # XAU_USD
+    elif pip_size >= 0.01:   decimals = 3   # USD_JPY
+    else:                    decimals = 5   # all others
+
     result = await place_oanda_order(
         account_id  = user.oanda_account_id,
         api_key     = user.oanda_api_key,
         instrument  = instrument,
         units       = units,
-        sl_price    = sl_price,
-        tp_price    = tp_price,
+        sl_price    = round(sl_price, decimals),
+        tp_price    = round(tp_price, decimals),
         is_live     = is_live,
     )
 
