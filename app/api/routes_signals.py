@@ -287,3 +287,41 @@ async def get_public_live_signals(db: AsyncSession = Depends(get_db)):
         }
         for s in signals
     ]
+
+
+@router.get("/stats/pairs")
+async def get_pairs_stats(db: AsyncSession = Depends(get_db)):
+    """Per-pair signal statistics for admin."""
+    from sqlalchemy import func, case
+    result = await db.execute(
+        select(
+            Signal.pair,
+            func.count(Signal.id).label("total"),
+            func.sum(case((Signal.status == SignalStatus.TP_HIT, 1), else_=0)).label("wins"),
+            func.sum(case((Signal.status == SignalStatus.SL_HIT, 1), else_=0)).label("losses"),
+            func.sum(case((Signal.status == SignalStatus.EXPIRED, 1), else_=0)).label("expired"),
+            func.sum(case((Signal.status == SignalStatus.OPEN, 1), else_=0)).label("open"),
+            func.sum(Signal.pnl_pips).label("total_pips"),
+            func.avg(Signal.confidence).label("avg_confidence"),
+        )
+        .group_by(Signal.pair)
+        .order_by(func.count(Signal.id).desc())
+    )
+    rows = result.fetchall()
+    stats = []
+    for r in rows:
+        closed = (r.wins or 0) + (r.losses or 0)
+        win_rate = round((r.wins or 0) / closed * 100, 1) if closed > 0 else 0
+        stats.append({
+            "pair":           r.pair,
+            "total":          r.total,
+            "wins":           r.wins or 0,
+            "losses":         r.losses or 0,
+            "expired":        r.expired or 0,
+            "open":           r.open or 0,
+            "closed":         closed,
+            "win_rate":       win_rate,
+            "total_pips":     round(r.total_pips or 0, 1),
+            "avg_confidence": round((r.avg_confidence or 0) * 100, 1),
+        })
+    return stats

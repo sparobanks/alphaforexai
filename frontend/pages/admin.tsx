@@ -43,6 +43,7 @@ function AdminContent() {
   const [key, setKey]         = useState("");
   const [tab, setTab]         = useState("overview");
   const [stats, setStats]     = useState<any>(null);
+  const [pairsStats, setPairsStats] = useState<any[]>([]);
   const [users, setUsers]     = useState<any[]>([]);
   const [signals, setSignals] = useState<any[]>([]);
   const [settings, setSettings] = useState<any>({});
@@ -84,6 +85,7 @@ function AdminContent() {
       setStats(s);
       setUsers(Array.isArray(u) ? u : []);
       setSignals(Array.isArray(sig) ? sig : []);
+      try { const p = await fetch(`${API}/signals/stats/pairs`, { headers: authHeaders() }); const pd = await p.json(); setPairsStats(Array.isArray(pd) ? pd : []); } catch {}
       setSettings(sett || {});
     } catch (e) { console.error(e); }
   }
@@ -251,6 +253,45 @@ function AdminContent() {
               </div>
             </div>
           </div>
+
+          {/* Pairs Performance */}
+          {pairsStats.length > 0 && (
+            <div style={{ background: T.card, border: `1px solid ${T.border}`, borderRadius: 12, padding: "24px", marginTop: 20 }}>
+              <div style={{ fontWeight: 600, color: T.gold, fontSize: 13, marginBottom: 16, textTransform: "uppercase" as const, letterSpacing: "0.05em" }}>Pairs Performance</div>
+              <div style={{ overflowX: "auto" as const }}>
+                <table style={{ width: "100%", borderCollapse: "collapse" as const, fontSize: 13 }}>
+                  <thead>
+                    <tr>
+                      {["Pair","Total","Open","Wins","Losses","Expired","Win Rate","Total Pips","Avg Conf"].map(h => (
+                        <th key={h} style={{ padding: "8px 12px", textAlign: "left" as const, fontSize: 11, color: T.muted, fontWeight: 600, textTransform: "uppercase" as const, letterSpacing: "0.05em", borderBottom: `1px solid ${T.border}` }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {pairsStats.map((p: any) => (
+                      <tr key={p.pair} style={{ borderBottom: `1px solid ${T.border}` }}>
+                        <td style={{ padding: "10px 12px", fontWeight: 600, color: T.white }}>{p.pair}</td>
+                        <td style={{ padding: "10px 12px", color: T.muted }}>{p.total}</td>
+                        <td style={{ padding: "10px 12px", color: "#60a5fa" }}>{p.open}</td>
+                        <td style={{ padding: "10px 12px", color: T.green }}>{p.wins}</td>
+                        <td style={{ padding: "10px 12px", color: T.red }}>{p.losses}</td>
+                        <td style={{ padding: "10px 12px", color: T.muted }}>{p.expired}</td>
+                        <td style={{ padding: "10px 12px" }}>
+                          <span style={{ color: p.win_rate >= 50 ? T.green : p.win_rate >= 40 ? T.gold : T.red, fontWeight: 600 }}>
+                            {p.win_rate}%
+                          </span>
+                        </td>
+                        <td style={{ padding: "10px 12px", fontWeight: 600, color: p.total_pips >= 0 ? T.green : T.red }}>
+                          {p.total_pips > 0 ? "+" : ""}{p.total_pips}
+                        </td>
+                        <td style={{ padding: "10px 12px", color: T.muted }}>{p.avg_confidence}%</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
 
           <div style={{ background: T.card, border: `1px solid ${T.border}`, borderRadius: 12, padding: "24px", marginTop: 20 }}>
             <div style={{ fontWeight: 600, color: T.white, fontSize: 14, marginBottom: 8 }}>Admin Auto-Trading</div>
