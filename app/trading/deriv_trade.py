@@ -12,9 +12,12 @@ DERIV_WS_URL = "wss://ws.binaryws.com/websockets/v3?app_id={app_id}"
 
 PAIR_MAP = {
     "EUR/USD": "frxEURUSD",
-    "GBP/USD": "frxGBPUSD",
     "USD/JPY": "frxUSDJPY",
-    "XAU/USD": "frxXAUUSD",
+    "GBP/USD": "frxGBPUSD",
+    "USD/CHF": "frxUSDCHF",
+    "AUD/USD": "frxAUDUSD",
+    "USD/CAD": "frxUSDCAD",
+    "NZD/USD": "frxNZDUSD",
 }
 
 

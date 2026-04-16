@@ -13,16 +13,22 @@ from app.core.logger import logger
 # OANDA pair mapping
 PAIR_MAP = {
     "EUR/USD": "EUR_USD",
-    "GBP/USD": "GBP_USD",
     "USD/JPY": "USD_JPY",
-    "XAU/USD": "XAU_USD",
+    "GBP/USD": "GBP_USD",
+    "USD/CHF": "USD_CHF",
+    "AUD/USD": "AUD_USD",
+    "USD/CAD": "USD_CAD",
+    "NZD/USD": "NZD_USD",
 }
 
 PIP_SIZES = {
     "EUR_USD": 0.0001,
-    "GBP_USD": 0.0001,
     "USD_JPY": 0.01,
-    "XAU_USD": 0.1,
+    "GBP_USD": 0.0001,
+    "USD_CHF": 0.0001,
+    "AUD_USD": 0.0001,
+    "USD_CAD": 0.0001,
+    "NZD_USD": 0.0001,
 }
 
 

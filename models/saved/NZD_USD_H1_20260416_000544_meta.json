@@ -1,0 +1,108 @@
+{
+  "pair": "NZD_USD",
+  "timeframe": "H1",
+  "trained_at": "2026-04-16T00:05:44.561328",
+  "train_rows": 10763,
+  "model_path": "/app/models/saved/NZD_USD_H1_20260416_000544.joblib",
+  "walk_forward": [
+    {
+      "n_trades": 861,
+      "win_rate": 0.3914,
+      "expectancy": -0.21,
+      "profit_factor": 0.965,
+      "max_drawdown": 870.0,
+      "sharpe": -0.018,
+      "auc": 0.4699,
+      "fold": 1
+    },
+    {
+      "n_trades": 861,
+      "win_rate": 0.4193,
+      "expectancy": 0.48,
+      "profit_factor": 1.083,
+      "max_drawdown": 670.0,
+      "sharpe": 0.039,
+      "auc": 0.5606,
+      "fold": 2
+    },
+    {
+      "n_trades": 861,
+      "win_rate": 0.3426,
+      "expectancy": -1.43,
+      "profit_factor": 0.782,
+      "max_drawdown": 1625.0,
+      "sharpe": -0.121,
+      "auc": 0.5479,
+      "fold": 3
+    },
+    {
+      "n_trades": 861,
+      "win_rate": 0.3763,
+      "expectancy": -0.59,
+      "profit_factor": 0.905,
+      "max_drawdown": 1435.0,
+      "sharpe": -0.049,
+      "auc": 0.5521,
+      "fold": 4
+    },
+    {
+      "n_trades": 862,
+      "win_rate": 0.3643,
+      "expectancy": -0.89,
+      "profit_factor": 0.859,
+      "max_drawdown": 1460.0,
+      "sharpe": -0.074,
+      "auc": 0.5089,
+      "fold": 5
+    }
+  ],
+  "avg_metrics": {
+    "win_rate": 0.3788,
+    "expectancy": -0.528,
+    "profit_factor": 0.9188,
+    "max_drawdown": 1212.0,
+    "sharpe": -0.0446
+  },
+  "top_features": [
+    [
+      "adx_trending",
+      0.04733186960220337
+    ],
+    [
+      "dist_ema20",
+      0.04551120847463608
+    ],
+    [
+      "di_diff",
+      0.044857874512672424
+    ],
+    [
+      "bb_expansion",
+      0.041946910321712494
+    ],
+    [
+      "price_pos_20",
+      0.04065157100558281
+    ],
+    [
+      "dist_ema50",
+      0.03710128739476204
+    ],
+    [
+      "ret_3",
+      0.03297720104455948
+    ],
+    [
+      "ret_5",
+      0.032465655356645584
+    ],
+    [
+      "weekly_trend",
+      0.03163804113864899
+    ],
+    [
+      "rsi_21",
+      0.03033885546028614
+    ]
+  ]
+}

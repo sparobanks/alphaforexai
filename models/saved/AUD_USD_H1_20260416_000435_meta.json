@@ -1,0 +1,108 @@
+{
+  "pair": "AUD_USD",
+  "timeframe": "H1",
+  "trained_at": "2026-04-16T00:04:35.857263",
+  "train_rows": 10767,
+  "model_path": "/app/models/saved/AUD_USD_H1_20260416_000435.joblib",
+  "walk_forward": [
+    {
+      "n_trades": 862,
+      "win_rate": 0.4165,
+      "expectancy": 0.41,
+      "profit_factor": 1.071,
+      "max_drawdown": 500.0,
+      "sharpe": 0.033,
+      "auc": 0.5393,
+      "fold": 1
+    },
+    {
+      "n_trades": 862,
+      "win_rate": 0.4548,
+      "expectancy": 1.37,
+      "profit_factor": 1.251,
+      "max_drawdown": 430.0,
+      "sharpe": 0.11,
+      "auc": 0.4737,
+      "fold": 2
+    },
+    {
+      "n_trades": 862,
+      "win_rate": 0.3434,
+      "expectancy": -1.42,
+      "profit_factor": 0.784,
+      "max_drawdown": 1515.0,
+      "sharpe": -0.119,
+      "auc": 0.5957,
+      "fold": 3
+    },
+    {
+      "n_trades": 862,
+      "win_rate": 0.377,
+      "expectancy": -0.57,
+      "profit_factor": 0.908,
+      "max_drawdown": 1165.0,
+      "sharpe": -0.047,
+      "auc": 0.5316,
+      "fold": 4
+    },
+    {
+      "n_trades": 862,
+      "win_rate": 0.4223,
+      "expectancy": 0.56,
+      "profit_factor": 1.096,
+      "max_drawdown": 715.0,
+      "sharpe": 0.045,
+      "auc": 0.4902,
+      "fold": 5
+    }
+  ],
+  "avg_metrics": {
+    "win_rate": 0.4028,
+    "expectancy": 0.07,
+    "profit_factor": 1.022,
+    "max_drawdown": 865.0,
+    "sharpe": 0.0044
+  },
+  "top_features": [
+    [
+      "bb_pct",
+      0.04143817350268364
+    ],
+    [
+      "minus_di",
+      0.04103131964802742
+    ],
+    [
+      "rsi_21",
+      0.03465211018919945
+    ],
+    [
+      "macd_bull",
+      0.03429645672440529
+    ],
+    [
+      "dist_ema20",
+      0.03355841338634491
+    ],
+    [
+      "ema_50_100_diff",
+      0.032112326472997665
+    ],
+    [
+      "ema_20_50_diff",
+      0.0317191518843174
+    ],
+    [
+      "ret_20",
+      0.031385909765958786
+    ],
+    [
+      "adx",
+      0.030796458944678307
+    ],
+    [
+      "rsi_7",
+      0.030483953654766083
+    ]
+  ]
+}
