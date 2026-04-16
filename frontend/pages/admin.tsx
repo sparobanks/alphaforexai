@@ -536,9 +536,9 @@ function AdminContent() {
 
             <div style={{ background: T.card, border: `1px solid ${T.border}`, borderRadius: 12, padding: "24px 28px", marginTop: 20 }}>
               <div style={{ fontWeight: 600, color: T.gold, fontSize: 13, marginBottom: 12, textTransform: "uppercase" as const, letterSpacing: "0.05em" }}>Model retraining</div>
-              <p style={{ fontSize: 13, color: T.muted, marginBottom: 16, lineHeight: 1.6 }}>Retrain the XGBoost model with the latest EUR/USD data. Runs in the background — takes ~10 minutes. Check API logs for progress.</p>
+              <p style={{ fontSize: 13, color: T.muted, marginBottom: 16, lineHeight: 1.6 }}>Retrain XGBoost models for all active pairs (EUR/USD, USD/JPY, GBP/USD, USD/CHF, AUD/USD, USD/CAD) with the latest data. Runs in the background — takes ~15 minutes. Check API logs for progress.</p>
               <button onClick={async () => {
-                if (!confirm("Retrain the model? Takes ~10 minutes in background.")) return;
+                if (!confirm("Retrain all 6 pair models? Takes ~15 minutes in background.")) return;
                 try {
                   await fetch(`${API}/models/retrain`, { method: "POST", headers: authHeaders() });
                   setMsg("✓ Retrain started — check API logs for progress");

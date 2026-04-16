@@ -19,6 +19,7 @@ PAIR_MAP = {
     "AUD/USD": "AUD_USD",
     "USD/CAD": "USD_CAD",
     "NZD/USD": "NZD_USD",
+    "XAU/USD": "XAU_USD",
 }
 
 PIP_SIZES = {
@@ -29,6 +30,7 @@ PIP_SIZES = {
     "AUD_USD": 0.0001,
     "USD_CAD": 0.0001,
     "NZD_USD": 0.0001,
+    "XAU_USD": 0.1,
 }
 
 
