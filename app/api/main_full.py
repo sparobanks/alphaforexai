@@ -67,7 +67,7 @@ async def _run_signal_check_inner():
                 continue
 
             latest_row = df.iloc[-1]
-            signal = generate_signal(latest_row, predictor, current_dt=datetime.utcnow())
+            signal = generate_signal(latest_row, predictor, current_dt=datetime.utcnow(), pair=pair)
 
             if signal is None:
                 continue

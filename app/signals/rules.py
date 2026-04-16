@@ -71,11 +71,14 @@ def compute_sl_tp(
         tp_delta = tp_pips * pip_size
 
     if direction == "BUY":
-        sl = round(entry - sl_delta, 5)
-        tp = round(entry + tp_delta, 5)
+        # Round to correct decimal places based on pip size
+        decimals = 2 if pip_size >= 0.1 else (3 if pip_size >= 0.01 else 5)
+        sl = round(entry - sl_delta, decimals)
+        tp = round(entry + tp_delta, decimals)
     else:
-        sl = round(entry + sl_delta, 5)
-        tp = round(entry - tp_delta, 5)
+        decimals = 2 if pip_size >= 0.1 else (3 if pip_size >= 0.01 else 5)
+        sl = round(entry + sl_delta, decimals)
+        tp = round(entry - tp_delta, decimals)
 
     return sl, tp
 
@@ -99,6 +102,7 @@ def generate_signal(
     current_dt: datetime = None,
     news_times: list[datetime] = None,
     current_spread_pips: float = 0.5,
+    pair: str = "EUR_USD",
 ) -> dict | None:
     """
     Full signal pipeline for a single bar.
@@ -145,7 +149,17 @@ def generate_signal(
     # ── Risk layer
     entry = float(row["close"])
     atr   = float(row.get("atr_14", 0.0010))
-    sl, tp = compute_sl_tp(entry, direction, atr)
+
+    # Determine pip size from pair
+    pair_upper = pair.upper()
+    if "XAU" in pair_upper:
+        pip_size = 0.1
+    elif "JPY" in pair_upper:
+        pip_size = 0.01
+    else:
+        pip_size = 0.0001
+
+    sl, tp = compute_sl_tp(entry, direction, atr, pip_size=pip_size)
 
     rr = abs(tp - entry) / max(abs(sl - entry), 1e-9)
     if rr < 1.5:
