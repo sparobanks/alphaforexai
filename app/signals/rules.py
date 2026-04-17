@@ -70,13 +70,15 @@ def compute_sl_tp(
         sl_delta = sl_pips * pip_size
         tp_delta = tp_pips * pip_size
 
+    # Decimal places based on pip size
+    if pip_size >= 0.1:    decimals = 3   # XAU/USD
+    elif pip_size >= 0.01: decimals = 3   # USD/JPY
+    else:                  decimals = 5   # EUR/USD, GBP/USD etc
+
     if direction == "BUY":
-        # Round to correct decimal places based on pip size
-        decimals = 3
         sl = round(entry - sl_delta, decimals)
         tp = round(entry + tp_delta, decimals)
     else:
-        decimals = 3
         sl = round(entry + sl_delta, decimals)
         tp = round(entry - tp_delta, decimals)
 
