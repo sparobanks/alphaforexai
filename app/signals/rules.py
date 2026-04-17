@@ -72,11 +72,11 @@ def compute_sl_tp(
 
     if direction == "BUY":
         # Round to correct decimal places based on pip size
-        decimals = 2 if pip_size >= 0.1 else (3 if pip_size >= 0.01 else 5)
+        decimals = 3
         sl = round(entry - sl_delta, decimals)
         tp = round(entry + tp_delta, decimals)
     else:
-        decimals = 2 if pip_size >= 0.1 else (3 if pip_size >= 0.01 else 5)
+        decimals = 3
         sl = round(entry + sl_delta, decimals)
         tp = round(entry - tp_delta, decimals)
 
@@ -153,13 +153,17 @@ def generate_signal(
     # Determine pip size from pair
     pair_upper = pair.upper()
     if "XAU" in pair_upper:
-        pip_size = 0.1
+        pip_size = 0.1    # Gold: 1 pip = $0.10, 15 pips = $1.50 minimum
+        # Use larger TP/SL for Gold (150 pips = $15)
+        sl, tp = compute_sl_tp(entry, direction, atr,
+                               pip_size=pip_size,
+                               tp_pips=150, sl_pips=100)
     elif "JPY" in pair_upper:
         pip_size = 0.01
+        sl, tp = compute_sl_tp(entry, direction, atr, pip_size=pip_size)
     else:
         pip_size = 0.0001
-
-    sl, tp = compute_sl_tp(entry, direction, atr, pip_size=pip_size)
+        sl, tp = compute_sl_tp(entry, direction, atr, pip_size=pip_size)
 
     rr = abs(tp - entry) / max(abs(sl - entry), 1e-9)
     if rr < 1.5:

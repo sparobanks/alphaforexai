@@ -1,0 +1,108 @@
+{
+  "pair": "USD_JPY",
+  "timeframe": "H1",
+  "trained_at": "2026-04-16T14:46:17.603720",
+  "train_rows": 12256,
+  "model_path": "/app/models/saved/USD_JPY_H1_20260416_144617.joblib",
+  "walk_forward": [
+    {
+      "n_trades": 981,
+      "win_rate": 0.9541,
+      "expectancy": 13.85,
+      "profit_factor": 31.2,
+      "max_drawdown": 20.0,
+      "sharpe": 2.649,
+      "auc": 0.7446,
+      "fold": 1
+    },
+    {
+      "n_trades": 981,
+      "win_rate": 0.9592,
+      "expectancy": 13.98,
+      "profit_factor": 35.288,
+      "max_drawdown": 10.0,
+      "sharpe": 2.828,
+      "auc": 0.656,
+      "fold": 2
+    },
+    {
+      "n_trades": 981,
+      "win_rate": 0.9643,
+      "expectancy": 14.11,
+      "profit_factor": 40.543,
+      "max_drawdown": 20.0,
+      "sharpe": 3.042,
+      "auc": 0.6731,
+      "fold": 3
+    },
+    {
+      "n_trades": 981,
+      "win_rate": 0.9684,
+      "expectancy": 14.21,
+      "profit_factor": 45.968,
+      "max_drawdown": 10.0,
+      "sharpe": 3.249,
+      "auc": 0.7322,
+      "fold": 4
+    },
+    {
+      "n_trades": 981,
+      "win_rate": 0.9429,
+      "expectancy": 13.57,
+      "profit_factor": 24.777,
+      "max_drawdown": 240.0,
+      "sharpe": 2.34,
+      "auc": 0.6829,
+      "fold": 5
+    }
+  ],
+  "avg_metrics": {
+    "win_rate": 0.9578,
+    "expectancy": 13.944,
+    "profit_factor": 35.5552,
+    "max_drawdown": 60.0,
+    "sharpe": 2.8216
+  },
+  "top_features": [
+    [
+      "sess_newyork",
+      0.09783933311700821
+    ],
+    [
+      "vol_norm",
+      0.08572826534509659
+    ],
+    [
+      "vol_trend",
+      0.08518508821725845
+    ],
+    [
+      "dist_ema20",
+      0.07401427626609802
+    ],
+    [
+      "ema_50_100_diff",
+      0.07226105779409409
+    ],
+    [
+      "ret_3",
+      0.07219886779785156
+    ],
+    [
+      "price_pos_20",
+      0.06852402538061142
+    ],
+    [
+      "rsi_14",
+      0.06511123478412628
+    ],
+    [
+      "bb_pct",
+      0.05947133153676987
+    ],
+    [
+      "lower_wick",
+      0.05782543495297432
+    ]
+  ]
+}

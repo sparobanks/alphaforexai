@@ -159,9 +159,7 @@ async def execute_signal_for_user(user: User, signal: dict) -> dict:
 
     # Round prices based on instrument precision
     pip_size = PIP_SIZES.get(instrument, 0.0001)
-    if pip_size >= 0.1:      decimals = 2   # XAU_USD
-    elif pip_size >= 0.01:   decimals = 3   # USD_JPY
-    else:                    decimals = 5   # all others
+    decimals = 3  # OANDA uses 3 decimal places for all instruments
 
     result = await place_oanda_order(
         account_id  = user.oanda_account_id,
