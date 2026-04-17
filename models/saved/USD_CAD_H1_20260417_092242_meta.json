@@ -1,0 +1,108 @@
+{
+  "pair": "USD_CAD",
+  "timeframe": "H1",
+  "trained_at": "2026-04-17T09:22:42.300617",
+  "train_rows": 10756,
+  "model_path": "/app/models/saved/USD_CAD_H1_20260417_092242.joblib",
+  "walk_forward": [
+    {
+      "n_trades": 861,
+      "win_rate": 0.439,
+      "expectancy": 0.98,
+      "profit_factor": 1.174,
+      "max_drawdown": 290.0,
+      "sharpe": 0.079,
+      "auc": 0.5651,
+      "fold": 1
+    },
+    {
+      "n_trades": 861,
+      "win_rate": 0.4309,
+      "expectancy": 0.77,
+      "profit_factor": 1.136,
+      "max_drawdown": 500.0,
+      "sharpe": 0.062,
+      "auc": 0.546,
+      "fold": 2
+    },
+    {
+      "n_trades": 861,
+      "win_rate": 0.4599,
+      "expectancy": 1.5,
+      "profit_factor": 1.277,
+      "max_drawdown": 635.0,
+      "sharpe": 0.12,
+      "auc": 0.472,
+      "fold": 3
+    },
+    {
+      "n_trades": 861,
+      "win_rate": 0.4541,
+      "expectancy": 1.35,
+      "profit_factor": 1.248,
+      "max_drawdown": 510.0,
+      "sharpe": 0.109,
+      "auc": 0.5047,
+      "fold": 4
+    },
+    {
+      "n_trades": 861,
+      "win_rate": 0.4262,
+      "expectancy": 0.66,
+      "profit_factor": 1.114,
+      "max_drawdown": 605.0,
+      "sharpe": 0.053,
+      "auc": 0.5356,
+      "fold": 5
+    }
+  ],
+  "avg_metrics": {
+    "win_rate": 0.442,
+    "expectancy": 1.052,
+    "profit_factor": 1.1898,
+    "max_drawdown": 508.0,
+    "sharpe": 0.0846
+  },
+  "top_features": [
+    [
+      "adx_trending",
+      0.06527713686227798
+    ],
+    [
+      "rsi_mid_bull",
+      0.05327213555574417
+    ],
+    [
+      "bb_expansion",
+      0.04203450679779053
+    ],
+    [
+      "rsi_slope",
+      0.041596390306949615
+    ],
+    [
+      "sess_newyork",
+      0.0321270152926445
+    ],
+    [
+      "upper_wick",
+      0.031120995059609413
+    ],
+    [
+      "dist_ema200",
+      0.03099871426820755
+    ],
+    [
+      "ema_50_100_diff",
+      0.029478518292307854
+    ],
+    [
+      "bb_width",
+      0.029026197269558907
+    ],
+    [
+      "ema_20_50_diff",
+      0.028840450569987297
+    ]
+  ]
+}
