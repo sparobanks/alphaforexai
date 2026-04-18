@@ -1,0 +1,108 @@
+{
+  "pair": "XAU_USD",
+  "timeframe": "H1",
+  "trained_at": "2026-04-18T17:01:13.327960",
+  "train_rows": 10653,
+  "model_path": "/app/models/saved/XAU_USD_H1_20260418_170113.joblib",
+  "walk_forward": [
+    {
+      "n_trades": 852,
+      "win_rate": 0.9542,
+      "expectancy": 13.86,
+      "profit_factor": 31.269,
+      "max_drawdown": 20.0,
+      "sharpe": 2.652,
+      "auc": 0.739,
+      "fold": 1
+    },
+    {
+      "n_trades": 852,
+      "win_rate": 0.9636,
+      "expectancy": 14.09,
+      "profit_factor": 39.726,
+      "max_drawdown": 10.0,
+      "sharpe": 3.01,
+      "auc": 0.8916,
+      "fold": 2
+    },
+    {
+      "n_trades": 852,
+      "win_rate": 0.9695,
+      "expectancy": 14.24,
+      "profit_factor": 47.654,
+      "max_drawdown": 10.0,
+      "sharpe": 3.311,
+      "auc": 0.7989,
+      "fold": 3
+    },
+    {
+      "n_trades": 852,
+      "win_rate": 0.966,
+      "expectancy": 14.15,
+      "profit_factor": 42.569,
+      "max_drawdown": 10.0,
+      "sharpe": 3.121,
+      "auc": 0.9001,
+      "fold": 4
+    },
+    {
+      "n_trades": 854,
+      "win_rate": 0.9625,
+      "expectancy": 14.06,
+      "profit_factor": 38.531,
+      "max_drawdown": 120.0,
+      "sharpe": 2.962,
+      "auc": 0.7279,
+      "fold": 5
+    }
+  ],
+  "avg_metrics": {
+    "win_rate": 0.9632,
+    "expectancy": 14.08,
+    "profit_factor": 39.9498,
+    "max_drawdown": 34.0,
+    "sharpe": 3.0112
+  },
+  "top_features": [
+    [
+      "vol_norm",
+      0.11967618018388748
+    ],
+    [
+      "sess_newyork",
+      0.11049472540616989
+    ],
+    [
+      "vol_trend",
+      0.08790761232376099
+    ],
+    [
+      "sess_london",
+      0.05493643134832382
+    ],
+    [
+      "dist_ema200",
+      0.0544370673596859
+    ],
+    [
+      "mom_10",
+      0.046180181205272675
+    ],
+    [
+      "ret_10",
+      0.03897321969270706
+    ],
+    [
+      "atr_norm",
+      0.034012410789728165
+    ],
+    [
+      "ret_5",
+      0.03355838730931282
+    ],
+    [
+      "minus_di",
+      0.03256496042013168
+    ]
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "pair": "EUR_USD",
+  "timeframe": "H1",
+  "trained_at": "2026-04-18T16:55:48.440568",
+  "train_rows": 10751,
+  "model_path": "/app/models/saved/EUR_USD_H1_20260418_165548.joblib",
+  "walk_forward": [
+    {
+      "n_trades": 860,
+      "win_rate": 0.4512,
+      "expectancy": 1.28,
+      "profit_factor": 1.233,
+      "max_drawdown": 515.0,
+      "sharpe": 0.103,
+      "auc": 0.5494,
+      "fold": 1
+    },
+    {
+      "n_trades": 860,
+      "win_rate": 0.4209,
+      "expectancy": 0.52,
+      "profit_factor": 1.09,
+      "max_drawdown": 470.0,
+      "sharpe": 0.042,
+      "auc": 0.5638,
+      "fold": 2
+    },
+    {
+      "n_trades": 860,
+      "win_rate": 0.3977,
+      "expectancy": -0.06,
+      "profit_factor": 0.99,
+      "max_drawdown": 615.0,
+      "sharpe": -0.005,
+      "auc": 0.4954,
+      "fold": 3
+    },
+    {
+      "n_trades": 860,
+      "win_rate": 0.3826,
+      "expectancy": -0.44,
+      "profit_factor": 0.929,
+      "max_drawdown": 645.0,
+      "sharpe": -0.036,
+      "auc": 0.5492,
+      "fold": 4
+    },
+    {
+      "n_trades": 861,
+      "win_rate": 0.4158,
+      "expectancy": 0.39,
+      "profit_factor": 1.068,
+      "max_drawdown": 610.0,
+      "sharpe": 0.032,
+      "auc": 0.548,
+      "fold": 5
+    }
+  ],
+  "avg_metrics": {
+    "win_rate": 0.4136,
+    "expectancy": 0.338,
+    "profit_factor": 1.062,
+    "max_drawdown": 571.0,
+    "sharpe": 0.0272
+  },
+  "top_features": [
+    [
+      "price_pos_20",
+      0.042396485805511475
+    ],
+    [
+      "dist_ema50",
+      0.04182964563369751
+    ],
+    [
+      "ema_20_50_diff",
+      0.0383971743285656
+    ],
+    [
+      "rsi_21",
+      0.03558482229709625
+    ],
+    [
+      "upper_wick",
+      0.03539262339472771
+    ],
+    [
+      "dist_ema20",
+      0.03462287038564682
+    ],
+    [
+      "ret_20",
+      0.03447841852903366
+    ],
+    [
+      "mom_20",
+      0.033696942031383514
+    ],
+    [
+      "atr_ratio",
+      0.032229602336883545
+    ],
+    [
+      "dist_ema100",
+      0.03204796463251114
+    ]
+  ]
+}

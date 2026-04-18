@@ -1,0 +1,84 @@
+{
+  "pair": "XAU_USD",
+  "timeframe": "H1",
+  "trained_at": "2026-04-18T22:08:21.800134",
+  "train_rows": 6007,
+  "model_path": "/app/models/saved/XAU_USD_H1_20260418_220821.joblib",
+  "walk_forward": [
+    {
+      "error": "No signals generated at this threshold",
+      "fold": 1
+    },
+    {
+      "error": "No signals generated at this threshold",
+      "fold": 2
+    },
+    {
+      "error": "No signals generated at this threshold",
+      "fold": 3
+    },
+    {
+      "n_trades": 27,
+      "win_rate": 0.8148,
+      "expectancy": 10.37,
+      "profit_factor": 6.6,
+      "max_drawdown": 10.0,
+      "sharpe": 1.068,
+      "auc": 0.5646,
+      "fold": 4
+    },
+    {
+      "error": "No signals generated at this threshold",
+      "fold": 5
+    }
+  ],
+  "avg_metrics": {
+    "win_rate": 0.8148,
+    "expectancy": 10.37,
+    "profit_factor": 6.6,
+    "max_drawdown": 10.0,
+    "sharpe": 1.068
+  },
+  "top_features": [
+    [
+      "ema_aligned_dn",
+      0.039373256266117096
+    ],
+    [
+      "rsi_14",
+      0.032708823680877686
+    ],
+    [
+      "ret_10",
+      0.03196164593100548
+    ],
+    [
+      "ret_5",
+      0.030202245339751244
+    ],
+    [
+      "dist_ema50",
+      0.03010670840740204
+    ],
+    [
+      "bb_pct",
+      0.029482614248991013
+    ],
+    [
+      "ret_3",
+      0.029466381296515465
+    ],
+    [
+      "vol_trend",
+      0.02924368716776371
+    ],
+    [
+      "mom_slope",
+      0.028894618153572083
+    ],
+    [
+      "vol_norm",
+      0.028829097747802734
+    ]
+  ]
+}

@@ -47,11 +47,14 @@ def main():
 
     df_filtered = make_trade_labels(
         df_filtered,
+        pair=args.pair,
         tp_pips=settings.TP_PIPS,
         sl_pips=settings.SL_PIPS,
         horizon=settings.SIGNAL_EXPIRY_BARS,
     )
 
+    df_filtered = df_filtered[df_filtered["label_binary"].notna()].copy()
+    df_filtered["label_binary"] = df_filtered["label_binary"].astype(int)
     label_dist = df_filtered["label_binary"].value_counts(normalize=True)
     logger.info(f"Label distribution:\n{label_dist}")
 

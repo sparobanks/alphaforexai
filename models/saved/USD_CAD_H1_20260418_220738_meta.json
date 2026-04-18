@@ -1,0 +1,84 @@
+{
+  "pair": "USD_CAD",
+  "timeframe": "H1",
+  "trained_at": "2026-04-18T22:07:38.901848",
+  "train_rows": 8720,
+  "model_path": "/app/models/saved/USD_CAD_H1_20260418_220738.joblib",
+  "walk_forward": [
+    {
+      "error": "No signals generated at this threshold",
+      "fold": 1
+    },
+    {
+      "error": "No signals generated at this threshold",
+      "fold": 2
+    },
+    {
+      "error": "No signals generated at this threshold",
+      "fold": 3
+    },
+    {
+      "error": "No signals generated at this threshold",
+      "fold": 4
+    },
+    {
+      "n_trades": 202,
+      "win_rate": 0.5347,
+      "expectancy": 3.37,
+      "profit_factor": 1.723,
+      "max_drawdown": 190.0,
+      "sharpe": 0.27,
+      "auc": 0.5422,
+      "fold": 5
+    }
+  ],
+  "avg_metrics": {
+    "win_rate": 0.5347,
+    "expectancy": 3.37,
+    "profit_factor": 1.723,
+    "max_drawdown": 190.0,
+    "sharpe": 0.27
+  },
+  "top_features": [
+    [
+      "macd_bull",
+      0.03950846567749977
+    ],
+    [
+      "dist_ema20",
+      0.037852540612220764
+    ],
+    [
+      "dist_ema200",
+      0.037403546273708344
+    ],
+    [
+      "dist_ema100",
+      0.03479905053973198
+    ],
+    [
+      "atr_ratio",
+      0.034550875425338745
+    ],
+    [
+      "dist_ema50",
+      0.03415941447019577
+    ],
+    [
+      "ema_50_100_diff",
+      0.03355400264263153
+    ],
+    [
+      "rsi_14",
+      0.03319714218378067
+    ],
+    [
+      "atr_norm",
+      0.0322464294731617
+    ],
+    [
+      "price_pos_20",
+      0.032197002321481705
+    ]
+  ]
+}

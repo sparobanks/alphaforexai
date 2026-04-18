@@ -1,0 +1,108 @@
+{
+  "pair": "USD_JPY",
+  "timeframe": "H1",
+  "trained_at": "2026-04-18T17:50:46.027185",
+  "train_rows": 8796,
+  "model_path": "/app/models/saved/USD_JPY_H1_20260418_175046.joblib",
+  "walk_forward": [
+    {
+      "n_trades": 704,
+      "win_rate": 0.527,
+      "expectancy": 3.17,
+      "profit_factor": 1.671,
+      "max_drawdown": 215.0,
+      "sharpe": 0.254,
+      "auc": 0.4849,
+      "fold": 1
+    },
+    {
+      "n_trades": 704,
+      "win_rate": 0.544,
+      "expectancy": 3.6,
+      "profit_factor": 1.79,
+      "max_drawdown": 155.0,
+      "sharpe": 0.289,
+      "auc": 0.4995,
+      "fold": 2
+    },
+    {
+      "n_trades": 704,
+      "win_rate": 0.4716,
+      "expectancy": 1.79,
+      "profit_factor": 1.339,
+      "max_drawdown": 210.0,
+      "sharpe": 0.143,
+      "auc": 0.5645,
+      "fold": 3
+    },
+    {
+      "n_trades": 704,
+      "win_rate": 0.544,
+      "expectancy": 3.6,
+      "profit_factor": 1.79,
+      "max_drawdown": 155.0,
+      "sharpe": 0.289,
+      "auc": 0.5471,
+      "fold": 4
+    },
+    {
+      "n_trades": 704,
+      "win_rate": 0.5014,
+      "expectancy": 2.54,
+      "profit_factor": 1.509,
+      "max_drawdown": 185.0,
+      "sharpe": 0.203,
+      "auc": 0.5107,
+      "fold": 5
+    }
+  ],
+  "avg_metrics": {
+    "win_rate": 0.5176,
+    "expectancy": 2.94,
+    "profit_factor": 1.6198,
+    "max_drawdown": 184.0,
+    "sharpe": 0.2356
+  },
+  "top_features": [
+    [
+      "dist_ema50",
+      0.0405687540769577
+    ],
+    [
+      "vol_trend",
+      0.03932206705212593
+    ],
+    [
+      "rsi_14",
+      0.035569142550230026
+    ],
+    [
+      "bb_squeeze",
+      0.0352807492017746
+    ],
+    [
+      "rsi_7",
+      0.03467799723148346
+    ],
+    [
+      "sess_london",
+      0.03342955932021141
+    ],
+    [
+      "bb_width",
+      0.032811518758535385
+    ],
+    [
+      "vol_norm",
+      0.03187878057360649
+    ],
+    [
+      "dist_ema20",
+      0.029770012944936752
+    ],
+    [
+      "price_pos_20",
+      0.029245177283883095
+    ]
+  ]
+}

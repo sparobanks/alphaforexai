@@ -1,0 +1,108 @@
+{
+  "pair": "GBP_USD",
+  "timeframe": "H1",
+  "trained_at": "2026-04-18T17:42:42.463695",
+  "train_rows": 8935,
+  "model_path": "/app/models/saved/GBP_USD_H1_20260418_174242.joblib",
+  "walk_forward": [
+    {
+      "n_trades": 715,
+      "win_rate": 0.4825,
+      "expectancy": 2.06,
+      "profit_factor": 1.399,
+      "max_drawdown": 250.0,
+      "sharpe": 0.165,
+      "auc": 0.5386,
+      "fold": 1
+    },
+    {
+      "n_trades": 715,
+      "win_rate": 0.5203,
+      "expectancy": 3.01,
+      "profit_factor": 1.627,
+      "max_drawdown": 210.0,
+      "sharpe": 0.241,
+      "auc": 0.5437,
+      "fold": 2
+    },
+    {
+      "n_trades": 715,
+      "win_rate": 0.4811,
+      "expectancy": 2.03,
+      "profit_factor": 1.391,
+      "max_drawdown": 290.0,
+      "sharpe": 0.162,
+      "auc": 0.5287,
+      "fold": 3
+    },
+    {
+      "n_trades": 715,
+      "win_rate": 0.5105,
+      "expectancy": 2.76,
+      "profit_factor": 1.564,
+      "max_drawdown": 240.0,
+      "sharpe": 0.221,
+      "auc": 0.5218,
+      "fold": 4
+    },
+    {
+      "n_trades": 715,
+      "win_rate": 0.4937,
+      "expectancy": 2.34,
+      "profit_factor": 1.463,
+      "max_drawdown": 155.0,
+      "sharpe": 0.187,
+      "auc": 0.5242,
+      "fold": 5
+    }
+  ],
+  "avg_metrics": {
+    "win_rate": 0.4976,
+    "expectancy": 2.44,
+    "profit_factor": 1.4888,
+    "max_drawdown": 229.0,
+    "sharpe": 0.1952
+  },
+  "top_features": [
+    [
+      "dist_ema50",
+      0.04689620062708855
+    ],
+    [
+      "price_pos_20",
+      0.04472227394580841
+    ],
+    [
+      "di_diff",
+      0.03979093208909035
+    ],
+    [
+      "dist_ema100",
+      0.03935430571436882
+    ],
+    [
+      "mom_10",
+      0.03574957326054573
+    ],
+    [
+      "minus_di",
+      0.034292999655008316
+    ],
+    [
+      "ema_aligned_up",
+      0.033038947731256485
+    ],
+    [
+      "ret_10",
+      0.03257230296730995
+    ],
+    [
+      "atr_ratio",
+      0.03195318952202797
+    ],
+    [
+      "bb_pct",
+      0.031726475805044174
+    ]
+  ]
+}

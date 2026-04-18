@@ -69,10 +69,14 @@ def walk_forward_validate(df, n_splits=5, train_pct=0.60, threshold=None):
         if len(train) < 200 or len(test) < 50:
             continue
 
-        X_train = train[FEATURE_COLS].values
-        y_train = train["label_binary"].values
-        X_test  = test[FEATURE_COLS].values
-        y_test  = test["label_binary"].values
+        train = train[train["label_binary"].notna()].copy()
+        test  = test[test["label_binary"].notna()].copy()
+        train["label_binary"] = train["label_binary"].astype(int)
+        test["label_binary"]  = test["label_binary"].astype(int)
+        X_train = train[FEATURE_COLS].values.astype(float)
+        y_train = train["label_binary"].values.astype(int)
+        X_test  = test[FEATURE_COLS].values.astype(float)
+        y_test  = test["label_binary"].values.astype(int)
 
         model = _build_model()
         model.fit(X_train, y_train, eval_set=[(X_test, y_test)], verbose=False)
@@ -94,7 +98,7 @@ def _build_model():
         subsample=0.75,
         colsample_bytree=0.75,
         min_child_weight=30,
-        scale_pos_weight=9.0,
+        scale_pos_weight=1.0,  # Labels are balanced 50/50
         gamma=0.1,
         reg_alpha=0.1,
         reg_lambda=1.0,

@@ -111,9 +111,13 @@ async def _run_signal_check_inner():
 async def lifespan(app: FastAPI):
     await init_db()
 
-    global predictor
-    predictor = await load_active_predictor()
-    if predictor:
+    global predictors
+    predictors = {}
+    for pair in settings.ACTIVE_PAIRS:
+        p = await load_active_predictor(pair, settings.ACTIVE_TIMEFRAME)
+        if p:
+            predictors[pair] = p
+    if predictors:
         logger.info("Model loaded successfully")
     else:
         logger.warning("No model loaded — run scripts/train.py first")
@@ -162,7 +166,7 @@ app.include_router(models_router,   prefix="/api/v1")
 async def health():
     return {
         "status": "ok",
-        "model_loaded": predictor is not None,
+        "model_loaded": len(predictors) > 0,
         "pairs": settings.ACTIVE_PAIRS,
         "timeframe": settings.ACTIVE_TIMEFRAME,
         "time": datetime.utcnow().isoformat(),

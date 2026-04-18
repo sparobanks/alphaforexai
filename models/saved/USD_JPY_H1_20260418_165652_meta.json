@@ -1,0 +1,108 @@
+{
+  "pair": "USD_JPY",
+  "timeframe": "H1",
+  "trained_at": "2026-04-18T16:56:52.108648",
+  "train_rows": 10719,
+  "model_path": "/app/models/saved/USD_JPY_H1_20260418_165652.joblib",
+  "walk_forward": [
+    {
+      "n_trades": 858,
+      "win_rate": 0.9429,
+      "expectancy": 13.57,
+      "profit_factor": 24.765,
+      "max_drawdown": 20.0,
+      "sharpe": 2.34,
+      "auc": 0.7379,
+      "fold": 1
+    },
+    {
+      "n_trades": 858,
+      "win_rate": 0.9499,
+      "expectancy": 13.75,
+      "profit_factor": 28.43,
+      "max_drawdown": 10.0,
+      "sharpe": 2.52,
+      "auc": 0.685,
+      "fold": 2
+    },
+    {
+      "n_trades": 858,
+      "win_rate": 0.9569,
+      "expectancy": 13.92,
+      "profit_factor": 33.284,
+      "max_drawdown": 20.0,
+      "sharpe": 2.741,
+      "auc": 0.7648,
+      "fold": 3
+    },
+    {
+      "n_trades": 858,
+      "win_rate": 0.951,
+      "expectancy": 13.78,
+      "profit_factor": 29.143,
+      "max_drawdown": 20.0,
+      "sharpe": 2.554,
+      "auc": 0.6947,
+      "fold": 4
+    },
+    {
+      "n_trades": 859,
+      "win_rate": 0.9523,
+      "expectancy": 13.81,
+      "profit_factor": 29.927,
+      "max_drawdown": 120.0,
+      "sharpe": 2.59,
+      "auc": 0.6651,
+      "fold": 5
+    }
+  ],
+  "avg_metrics": {
+    "win_rate": 0.9506,
+    "expectancy": 13.766,
+    "profit_factor": 29.1098,
+    "max_drawdown": 38.0,
+    "sharpe": 2.549
+  },
+  "top_features": [
+    [
+      "vol_norm",
+      0.1170308068394661
+    ],
+    [
+      "vol_trend",
+      0.09392663836479187
+    ],
+    [
+      "sess_london",
+      0.08461782336235046
+    ],
+    [
+      "sess_newyork",
+      0.0714670866727829
+    ],
+    [
+      "sess_overlap",
+      0.055668704211711884
+    ],
+    [
+      "price_pos_50",
+      0.038909412920475006
+    ],
+    [
+      "ret_3",
+      0.038285449147224426
+    ],
+    [
+      "ema_20_50_diff",
+      0.03110218606889248
+    ],
+    [
+      "dist_ema200",
+      0.03046358749270439
+    ],
+    [
+      "atr_ratio",
+      0.030070070177316666
+    ]
+  ]
+}

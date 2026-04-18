@@ -1,0 +1,108 @@
+{
+  "pair": "EUR_USD",
+  "timeframe": "H1",
+  "trained_at": "2026-04-18T17:41:27.503043",
+  "train_rows": 8792,
+  "model_path": "/app/models/saved/EUR_USD_H1_20260418_174127.joblib",
+  "walk_forward": [
+    {
+      "n_trades": 704,
+      "win_rate": 0.5085,
+      "expectancy": 2.71,
+      "profit_factor": 1.552,
+      "max_drawdown": 375.0,
+      "sharpe": 0.217,
+      "auc": 0.4923,
+      "fold": 1
+    },
+    {
+      "n_trades": 704,
+      "win_rate": 0.5085,
+      "expectancy": 2.71,
+      "profit_factor": 1.552,
+      "max_drawdown": 265.0,
+      "sharpe": 0.217,
+      "auc": 0.5202,
+      "fold": 2
+    },
+    {
+      "n_trades": 704,
+      "win_rate": 0.4702,
+      "expectancy": 1.75,
+      "profit_factor": 1.331,
+      "max_drawdown": 260.0,
+      "sharpe": 0.141,
+      "auc": 0.5595,
+      "fold": 3
+    },
+    {
+      "n_trades": 704,
+      "win_rate": 0.4531,
+      "expectancy": 1.33,
+      "profit_factor": 1.243,
+      "max_drawdown": 290.0,
+      "sharpe": 0.107,
+      "auc": 0.5476,
+      "fold": 4
+    },
+    {
+      "n_trades": 704,
+      "win_rate": 0.4915,
+      "expectancy": 2.29,
+      "profit_factor": 1.45,
+      "max_drawdown": 325.0,
+      "sharpe": 0.183,
+      "auc": 0.5612,
+      "fold": 5
+    }
+  ],
+  "avg_metrics": {
+    "win_rate": 0.4864,
+    "expectancy": 2.158,
+    "profit_factor": 1.4256,
+    "max_drawdown": 303.0,
+    "sharpe": 0.173
+  },
+  "top_features": [
+    [
+      "dist_ema50",
+      0.045247290283441544
+    ],
+    [
+      "rsi_7",
+      0.04439564421772957
+    ],
+    [
+      "body_pct",
+      0.04296877980232239
+    ],
+    [
+      "ema_20_50_diff",
+      0.04001181945204735
+    ],
+    [
+      "upper_wick",
+      0.039994217455387115
+    ],
+    [
+      "adx",
+      0.03827740252017975
+    ],
+    [
+      "dist_ema100",
+      0.03779223561286926
+    ],
+    [
+      "price_pos_20",
+      0.03641343116760254
+    ],
+    [
+      "dist_ema20",
+      0.03360949084162712
+    ],
+    [
+      "plus_di",
+      0.032950058579444885
+    ]
+  ]
+}

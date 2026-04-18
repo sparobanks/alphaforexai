@@ -12,7 +12,13 @@ def make_trade_labels(
     sl_pips: int = 10,
     horizon: int = 24,
     pip_size: float = 0.0001,
+    pair: str = "",
 ) -> pd.DataFrame:
+    # Auto-detect pip size from pair name
+    if pair:
+        p = pair.upper()
+        if "XAU" in p:     pip_size = 0.1
+        elif "JPY" in p:   pip_size = 0.01
     df = df.copy()
     closes = df["close"].values
     highs  = df["high"].values
@@ -48,5 +54,15 @@ def make_trade_labels(
     df["label_short"] = label_short
     df["label"]       = np.where(label_long == 1, 1,
                          np.where(label_short == 1, -1, 0))
-    df["label_binary"] = label_long
+
+    # True binary label: 1 = BUY opportunity, 0 = SELL opportunity
+    # Only keep bars where there is a clear signal (long OR short, not both/neither)
+    df["label_binary"] = np.where(
+        (label_long == 1) & (label_short == 0), 1,   # Clear BUY
+        np.where(
+            (label_short == 1) & (label_long == 0), 0,  # Clear SELL
+            np.nan  # Ambiguous - exclude from training
+        )
+    )
+
     return df
