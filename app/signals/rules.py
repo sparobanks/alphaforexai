@@ -12,7 +12,13 @@ from app.db.models import SignalDirection
 # ── Filters ───────────────────────────────────────────────────────────────────
 
 def is_active_session(dt: datetime) -> bool:
-    """Only trade London and New York sessions (UTC)."""
+    """Only trade London and New York sessions (UTC). No weekends."""
+    # Weekend check: Saturday=5, Sunday=6
+    weekday = dt.weekday()
+    if weekday == 5:  # Saturday - market closed
+        return False
+    if weekday == 6 and dt.hour < 21:  # Sunday before 21:00 UTC
+        return False
     h = dt.hour
     return (7 <= h < 16) or (12 <= h < 21)  # London or NY
 
