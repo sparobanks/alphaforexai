@@ -29,7 +29,7 @@ from app.core.logger          import logger
 
 scheduler = AsyncIOScheduler()
 _scheduler_started = False
-predictor = None
+predictors = {}
 
 
 _signal_check_running = False
@@ -46,27 +46,27 @@ async def run_signal_check():
         _signal_check_running = False
 
 async def _run_signal_check_inner():
-    global predictor
-    if predictor is None:
-        predictor = await load_active_predictor()
-        if predictor is None:
-            logger.warning("No active model loaded — skipping signal check")
-            return
-
+    global predictors
+    if not predictors:
+        predictors = {}
     PRIMARY_PAIR = "EUR_USD"
-
     for pair in settings.ACTIVE_PAIRS:
         try:
             is_primary = (pair == PRIMARY_PAIR)
-
+            if pair not in predictors or predictors[pair] is None:
+                predictors[pair] = await load_active_predictor(pair, settings.ACTIVE_TIMEFRAME)
+            predictor = predictors[pair]
+            if predictor is None:
+                logger.warning(f"No model for {pair} — skipping")
+                continue
             df_raw = fetch_candles(pair, settings.ACTIVE_TIMEFRAME, count=200)
             if df_raw.empty:
                 continue
             df = build_features(df_raw)
             if df.empty:
                 continue
-
             latest_row = df.iloc[-1]
+            signal = generate_signal(latest_row, predictor, current_dt=datetime.utcnow(), pair=pair)
             signal = generate_signal(latest_row, predictor, current_dt=datetime.utcnow(), pair=pair)
 
             if signal is None:

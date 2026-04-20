@@ -41,10 +41,11 @@ def spread_ok(current_spread_pips: float, max_spread: float = 2.0) -> bool:
 
 
 def trend_aligned(row: pd.Series, direction: str) -> bool:
-    """Require ADX trending AND EMA alignment."""
+    """Soft trend filter - only reject extreme counter-trend setups."""
     adx = float(row.get("adx", 0))
-    if adx < 20:
-        return False
+    # Only apply trend filter when trend is very strong (ADX > 35)
+    if adx < 35:
+        return True  # No strong trend - allow signal
     if direction == "BUY":
         return bool(row.get("ema_aligned_up", row.get("trend_up", 1)))
     else:
