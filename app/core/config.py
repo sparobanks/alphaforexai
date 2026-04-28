@@ -36,7 +36,7 @@ class Settings(BaseSettings):
     SMTP_PASSWORD: Optional[str] = None
 
     # Signal settings
-    SIGNAL_CONFIDENCE_THRESHOLD: float = 0.60
+    SIGNAL_CONFIDENCE_THRESHOLD: float = 0.55
     DEFAULT_RISK_PCT: float = 1.0          # % of account per trade
     TP_PIPS: int = 20
     SL_PIPS: int = 10
