@@ -2,6 +2,7 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import Script from "next/script";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import "../styles/globals.css";
 
 const API = "https://alphaforexai.com/api/v1";
@@ -27,6 +28,18 @@ export default function App({ Component, pageProps }: AppProps) {
       })
       .catch(() => {});
   }, []);
+
+  const router = useRouter();
+  useEffect(() => {
+    const path = window.location.pathname;
+    const referrer = document.referrer || "";
+    if (path.startsWith("/admin") || path.startsWith("/blog-admin")) return;
+    fetch(`${API}/blog/track`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path, referrer }),
+    }).catch(() => {});
+  }, [router.pathname]);
 
   return (
     <>
