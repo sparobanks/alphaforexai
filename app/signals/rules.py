@@ -6,6 +6,30 @@ import pandas as pd
 from datetime import datetime, timedelta
 from app.core.config import settings
 from app.core.logger import logger
+
+def get_htf_trend(pair: str, timeframe: str = "H4") -> str:
+    """Get higher timeframe trend direction. Returns UP, DOWN or SIDEWAYS."""
+    try:
+        from app.data.ingest_oanda import fetch_candles
+        df = fetch_candles(pair, timeframe, count=100)
+        if df is None or df.empty:
+            return "SIDEWAYS"
+        from app.features.indicators import build_features
+        df = build_features(df)
+        row = df.iloc[-1]
+        ema_up   = bool(row.get("ema_aligned_up", 0))
+        ema_down = bool(row.get("ema_aligned_dn", 0))
+        adx      = float(row.get("adx", 0))
+        if adx < 20:
+            return "SIDEWAYS"
+        if ema_up:
+            return "UP"
+        if ema_down:
+            return "DOWN"
+        return "SIDEWAYS"
+    except Exception as e:
+        logger.debug(f"HTF trend error: {e}")
+        return "SIDEWAYS"  # Default to allow signal if HTF check fails
 from app.db.models import SignalDirection
 
 
@@ -154,6 +178,16 @@ def generate_signal(
     if not trend_aligned(row, direction):
         logger.debug(f"Rejected: trend not aligned for {direction}")
         return None
+
+    # ── Higher timeframe trend filter
+    htf_trend = get_htf_trend(pair.replace("/", "_"), "H4")
+    if htf_trend != "SIDEWAYS":
+        if direction == "BUY" and htf_trend == "DOWN":
+            logger.debug(f"Rejected: H4 trend is DOWN, skipping BUY on {pair}")
+            return None
+        if direction == "SELL" and htf_trend == "UP":
+            logger.debug(f"Rejected: H4 trend is UP, skipping SELL on {pair}")
+            return None
 
     # ── Risk layer
     entry = float(row["close"])
