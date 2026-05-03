@@ -13,8 +13,22 @@ export function ContactPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    await new Promise(r => setTimeout(r, 800));
-    setSent(true); setLoading(false);
+    try {
+      const res = await fetch("https://alphaforexai.com/api/v1/auth/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (res.ok) {
+        setSent(true);
+      } else {
+        alert("Failed to send message. Please email us directly at hello@alphaforexai.com");
+      }
+    } catch {
+      alert("Connection error. Please email us directly at hello@alphaforexai.com");
+    } finally {
+      setLoading(false);
+    }
   }
 
   const inputStyle: any = {
@@ -41,7 +55,7 @@ export function ContactPage() {
             <div>
               {[
                 { label: "Email", value: "hello@alphaforexai.com", href: "mailto:hello@alphaforexai.com" },
-                { label: "Support", value: "support@alphaforexai.com", href: "mailto:support@alphaforexai.com" },
+                
                 { label: "Response time", value: "Within 24 hours", href: null },
               ].map(item => (
                 <div key={item.label} style={{ marginBottom: 28, paddingBottom: 28, borderBottom: `1px solid ${T.border}` }}>

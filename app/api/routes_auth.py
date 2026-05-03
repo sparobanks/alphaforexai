@@ -778,3 +778,57 @@ async def test_deriv_connection(user: User = Depends(get_current_user)):
 
 
 
+
+
+@router.post("/contact")
+async def contact_form(body: dict):
+    """Receive contact form and send email to admin."""
+    name    = body.get("name", "")
+    email   = body.get("email", "")
+    subject = body.get("subject", "")
+    message = body.get("message", "")
+
+    if not name or not email or not message:
+        raise HTTPException(status_code=400, detail="Missing required fields")
+
+    try:
+        import aiosmtplib
+        from email.mime.text import MIMEText
+        from email.mime.multipart import MIMEMultipart
+        from app.core.config import settings
+
+        msg = MIMEMultipart()
+        msg["From"]    = settings.SMTP_USER
+        msg["To"]      = "hello@alphaforexai.com"
+        msg["Subject"] = f"Contact Form: {subject}"
+        msg["Reply-To"] = email
+
+        body_text = f"""
+New contact form submission from AlphaForexAI:
+
+Name:    {name}
+Email:   {email}
+Subject: {subject}
+
+Message:
+{message}
+        """
+        msg.attach(MIMEText(body_text, "plain"))
+
+        import ssl
+        ctx = ssl.create_default_context()
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+        await aiosmtplib.send(
+            msg,
+            hostname=settings.SMTP_HOST,
+            port=settings.SMTP_PORT,
+            username=settings.SMTP_USER,
+            password=settings.SMTP_PASSWORD,
+            use_tls=False,
+            start_tls=True,
+            tls_context=ctx,
+        )
+        return {"ok": True}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Email failed: {str(e)}")
