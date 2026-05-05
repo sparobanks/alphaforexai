@@ -1,0 +1,102 @@
+{
+  "pair": "USD_CAD",
+  "timeframe": "H1",
+  "trained_at": "2026-05-05T06:47:03.501886",
+  "train_rows": 8718,
+  "model_path": "models/saved/USD_CAD_H1_20260505_064703.joblib",
+  "walk_forward": [
+    {
+      "n_trades": 698,
+      "win_rate": 0.5072,
+      "expectancy": 2.68,
+      "profit_factor": 1.544,
+      "max_drawdown": 190.0,
+      "sharpe": 0.214,
+      "auc": 0.5702,
+      "fold": 1
+    },
+    {
+      "n_trades": 242,
+      "win_rate": 0.5207,
+      "expectancy": 3.02,
+      "profit_factor": 1.629,
+      "max_drawdown": 200.0,
+      "sharpe": 0.242,
+      "auc": 0.5427,
+      "fold": 2
+    },
+    {
+      "n_trades": 698,
+      "win_rate": 0.5301,
+      "expectancy": 3.25,
+      "profit_factor": 1.692,
+      "max_drawdown": 170.0,
+      "sharpe": 0.261,
+      "auc": 0.4672,
+      "fold": 3
+    },
+    {
+      "n_trades": 30,
+      "win_rate": 0.7333,
+      "expectancy": 8.33,
+      "profit_factor": 4.125,
+      "max_drawdown": 30.0,
+      "sharpe": 0.754,
+      "auc": 0.5111,
+      "fold": 4
+    },
+    {
+      "error": "No signals generated at this threshold",
+      "fold": 5
+    }
+  ],
+  "avg_metrics": {
+    "win_rate": 0.5728,
+    "expectancy": 4.32,
+    "profit_factor": 2.2475,
+    "max_drawdown": 147.5,
+    "sharpe": 0.3678
+  },
+  "top_features": [
+    [
+      "dist_ema200",
+      0.04072703793644905
+    ],
+    [
+      "atr_ratio",
+      0.039901744574308395
+    ],
+    [
+      "dist_ema100",
+      0.03777768090367317
+    ],
+    [
+      "rsi_21",
+      0.03698980063199997
+    ],
+    [
+      "rsi_slope",
+      0.03689710795879364
+    ],
+    [
+      "price_pos_20",
+      0.036897096782922745
+    ],
+    [
+      "adx",
+      0.03670365735888481
+    ],
+    [
+      "ema_50_100_diff",
+      0.0359468087553978
+    ],
+    [
+      "ema_20_50_diff",
+      0.035661984235048294
+    ],
+    [
+      "ret_5",
+      0.03525199368596077
+    ]
+  ]
+}

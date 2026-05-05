@@ -55,7 +55,7 @@ async def _retrain_task():
 
         for pair in settings.ACTIVE_PAIRS:
             logger.info(f"Retraining {pair}...")
-            df_raw = fetch_history(pair, settings.ACTIVE_TIMEFRAME, years=2)
+            df_raw = fetch_history(pair, settings.ACTIVE_TIMEFRAME, years=5)
             if df_raw.empty:
                 logger.error(f"No data for {pair}")
                 continue

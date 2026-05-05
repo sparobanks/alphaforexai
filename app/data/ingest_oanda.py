@@ -59,7 +59,7 @@ def fetch_candles(
     else:
         params["count"] = count
 
-    with httpx.Client(timeout=30) as client:
+    with httpx.Client(timeout=60) as client:
         resp = client.get(url, headers=_headers(), params=params)
         resp.raise_for_status()
         data = resp.json()

@@ -1,0 +1,102 @@
+{
+  "pair": "USD_JPY",
+  "timeframe": "H1",
+  "trained_at": "2026-05-04T21:31:11.582001",
+  "train_rows": 14750,
+  "model_path": "models/saved/USD_JPY_H1_20260504_213111.joblib",
+  "walk_forward": [
+    {
+      "n_trades": 556,
+      "win_rate": 0.5629,
+      "expectancy": 4.07,
+      "profit_factor": 1.932,
+      "max_drawdown": 240.0,
+      "sharpe": 0.329,
+      "auc": 0.5185,
+      "fold": 1
+    },
+    {
+      "error": "No signals generated at this threshold",
+      "fold": 2
+    },
+    {
+      "n_trades": 831,
+      "win_rate": 0.5271,
+      "expectancy": 3.18,
+      "profit_factor": 1.672,
+      "max_drawdown": 170.0,
+      "sharpe": 0.255,
+      "auc": 0.5124,
+      "fold": 3
+    },
+    {
+      "n_trades": 476,
+      "win_rate": 0.479,
+      "expectancy": 1.97,
+      "profit_factor": 1.379,
+      "max_drawdown": 150.0,
+      "sharpe": 0.158,
+      "auc": 0.5107,
+      "fold": 4
+    },
+    {
+      "n_trades": 1057,
+      "win_rate": 0.5137,
+      "expectancy": 2.84,
+      "profit_factor": 1.585,
+      "max_drawdown": 205.0,
+      "sharpe": 0.228,
+      "auc": 0.5297,
+      "fold": 5
+    }
+  ],
+  "avg_metrics": {
+    "win_rate": 0.5207,
+    "expectancy": 3.015,
+    "profit_factor": 1.642,
+    "max_drawdown": 191.25,
+    "sharpe": 0.2425
+  },
+  "top_features": [
+    [
+      "rsi_14",
+      0.03406589850783348
+    ],
+    [
+      "ret_20",
+      0.03339081630110741
+    ],
+    [
+      "macd_growing",
+      0.03123989701271057
+    ],
+    [
+      "sess_newyork",
+      0.03072591871023178
+    ],
+    [
+      "plus_di",
+      0.030367832630872726
+    ],
+    [
+      "dist_ema200",
+      0.030098188668489456
+    ],
+    [
+      "ema_20_50_diff",
+      0.029849747195839882
+    ],
+    [
+      "sess_london",
+      0.029383664950728416
+    ],
+    [
+      "adx",
+      0.02912791259586811
+    ],
+    [
+      "dist_ema20",
+      0.028072167187929153
+    ]
+  ]
+}

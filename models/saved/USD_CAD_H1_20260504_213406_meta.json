@@ -1,0 +1,108 @@
+{
+  "pair": "USD_CAD",
+  "timeframe": "H1",
+  "trained_at": "2026-05-04T21:34:06.212031",
+  "train_rows": 14666,
+  "model_path": "models/saved/USD_CAD_H1_20260504_213406.joblib",
+  "walk_forward": [
+    {
+      "n_trades": 517,
+      "win_rate": 0.5184,
+      "expectancy": 2.96,
+      "profit_factor": 1.614,
+      "max_drawdown": 225.0,
+      "sharpe": 0.237,
+      "auc": 0.5254,
+      "fold": 1
+    },
+    {
+      "n_trades": 782,
+      "win_rate": 0.5473,
+      "expectancy": 3.68,
+      "profit_factor": 1.814,
+      "max_drawdown": 245.0,
+      "sharpe": 0.296,
+      "auc": 0.5283,
+      "fold": 2
+    },
+    {
+      "n_trades": 844,
+      "win_rate": 0.5059,
+      "expectancy": 2.65,
+      "profit_factor": 1.536,
+      "max_drawdown": 210.0,
+      "sharpe": 0.212,
+      "auc": 0.5042,
+      "fold": 3
+    },
+    {
+      "n_trades": 1056,
+      "win_rate": 0.5294,
+      "expectancy": 3.23,
+      "profit_factor": 1.687,
+      "max_drawdown": 195.0,
+      "sharpe": 0.259,
+      "auc": 0.5002,
+      "fold": 4
+    },
+    {
+      "n_trades": 751,
+      "win_rate": 0.5126,
+      "expectancy": 2.82,
+      "profit_factor": 1.578,
+      "max_drawdown": 340.0,
+      "sharpe": 0.225,
+      "auc": 0.5073,
+      "fold": 5
+    }
+  ],
+  "avg_metrics": {
+    "win_rate": 0.5227,
+    "expectancy": 3.068,
+    "profit_factor": 1.6458,
+    "max_drawdown": 243.0,
+    "sharpe": 0.2458
+  },
+  "top_features": [
+    [
+      "monthly_trend",
+      0.0391816683113575
+    ],
+    [
+      "macd_growing",
+      0.030943021178245544
+    ],
+    [
+      "di_diff",
+      0.030600717291235924
+    ],
+    [
+      "dist_ema50",
+      0.028533069416880608
+    ],
+    [
+      "ema_20_50_diff",
+      0.02791505865752697
+    ],
+    [
+      "bb_width",
+      0.027234790846705437
+    ],
+    [
+      "dist_ema20",
+      0.02720487304031849
+    ],
+    [
+      "dist_ema100",
+      0.026875434443354607
+    ],
+    [
+      "minus_di",
+      0.02640526369214058
+    ],
+    [
+      "bb_pct",
+      0.026314636692404747
+    ]
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "pair": "AUD_USD",
+  "timeframe": "H1",
+  "trained_at": "2026-05-05T06:46:34.526710",
+  "train_rows": 8739,
+  "model_path": "models/saved/AUD_USD_H1_20260505_064634.joblib",
+  "walk_forward": [
+    {
+      "n_trades": 59,
+      "win_rate": 0.6271,
+      "expectancy": 5.68,
+      "profit_factor": 2.523,
+      "max_drawdown": 80.0,
+      "sharpe": 0.47,
+      "auc": 0.5243,
+      "fold": 1
+    },
+    {
+      "n_trades": 184,
+      "win_rate": 0.6413,
+      "expectancy": 6.03,
+      "profit_factor": 2.682,
+      "max_drawdown": 125.0,
+      "sharpe": 0.503,
+      "auc": 0.5423,
+      "fold": 2
+    },
+    {
+      "error": "No signals generated at this threshold",
+      "fold": 3
+    },
+    {
+      "n_trades": 271,
+      "win_rate": 0.4539,
+      "expectancy": 1.35,
+      "profit_factor": 1.247,
+      "max_drawdown": 260.0,
+      "sharpe": 0.108,
+      "auc": 0.4898,
+      "fold": 4
+    },
+    {
+      "n_trades": 382,
+      "win_rate": 0.4791,
+      "expectancy": 1.98,
+      "profit_factor": 1.379,
+      "max_drawdown": 195.0,
+      "sharpe": 0.158,
+      "auc": 0.5207,
+      "fold": 5
+    }
+  ],
+  "avg_metrics": {
+    "win_rate": 0.5504,
+    "expectancy": 3.76,
+    "profit_factor": 1.9578,
+    "max_drawdown": 165.0,
+    "sharpe": 0.3097
+  },
+  "top_features": [
+    [
+      "bb_squeeze",
+      0.04294846951961517
+    ],
+    [
+      "dist_ema100",
+      0.03181315213441849
+    ],
+    [
+      "rsi_mid_bear",
+      0.03165724501013756
+    ],
+    [
+      "bb_pct",
+      0.0305954460054636
+    ],
+    [
+      "price_pos_50",
+      0.030542777851223946
+    ],
+    [
+      "di_bull",
+      0.029935646802186966
+    ],
+    [
+      "di_diff",
+      0.028163159266114235
+    ],
+    [
+      "price_pos_20",
+      0.027473514899611473
+    ],
+    [
+      "rsi_14",
+      0.027070244774222374
+    ],
+    [
+      "rsi_21",
+      0.026886435225605965
+    ]
+  ]
+}

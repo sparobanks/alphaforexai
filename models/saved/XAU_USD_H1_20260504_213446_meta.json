@@ -1,0 +1,90 @@
+{
+  "pair": "XAU_USD",
+  "timeframe": "H1",
+  "trained_at": "2026-05-04T21:34:46.051291",
+  "train_rows": 11090,
+  "model_path": "models/saved/XAU_USD_H1_20260504_213446.joblib",
+  "walk_forward": [
+    {
+      "error": "No signals generated at this threshold",
+      "fold": 1
+    },
+    {
+      "error": "No signals generated at this threshold",
+      "fold": 2
+    },
+    {
+      "error": "No signals generated at this threshold",
+      "fold": 3
+    },
+    {
+      "n_trades": 230,
+      "win_rate": 0.5522,
+      "expectancy": 3.8,
+      "profit_factor": 1.85,
+      "max_drawdown": 60.0,
+      "sharpe": 0.306,
+      "auc": 0.5026,
+      "fold": 4
+    },
+    {
+      "n_trades": 888,
+      "win_rate": 0.536,
+      "expectancy": 3.4,
+      "profit_factor": 1.733,
+      "max_drawdown": 95.0,
+      "sharpe": 0.273,
+      "auc": 0.5502,
+      "fold": 5
+    }
+  ],
+  "avg_metrics": {
+    "win_rate": 0.5441,
+    "expectancy": 3.6,
+    "profit_factor": 1.7915,
+    "max_drawdown": 77.5,
+    "sharpe": 0.2895
+  },
+  "top_features": [
+    [
+      "sess_london",
+      0.035094890743494034
+    ],
+    [
+      "mom_20",
+      0.034014783799648285
+    ],
+    [
+      "dist_ema20",
+      0.033604223281145096
+    ],
+    [
+      "minus_di",
+      0.033071037381887436
+    ],
+    [
+      "dist_ema50",
+      0.031589850783348083
+    ],
+    [
+      "adx",
+      0.030846666544675827
+    ],
+    [
+      "rsi_21",
+      0.03037228062748909
+    ],
+    [
+      "ret_10",
+      0.030179399996995926
+    ],
+    [
+      "price_pos_20",
+      0.029952052980661392
+    ],
+    [
+      "lower_wick",
+      0.029602274298667908
+    ]
+  ]
+}

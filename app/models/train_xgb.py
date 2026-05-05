@@ -92,18 +92,16 @@ def walk_forward_validate(df, n_splits=5, train_pct=0.60, threshold=None):
 
 def _build_model():
     return XGBClassifier(
-        n_estimators=500,
-        max_depth=3,
-        learning_rate=0.02,
-        subsample=0.75,
-        colsample_bytree=0.75,
-        min_child_weight=30,
-        scale_pos_weight=1.0,  # Labels are balanced 50/50
-        gamma=0.1,
-        reg_alpha=0.1,
+        n_estimators=300,
+        max_depth=4,
+        learning_rate=0.05,
+        subsample=0.8,
+        colsample_bytree=0.8,
+        min_child_weight=5,
+        scale_pos_weight=1.0,
+        gamma=0.0,
+        reg_alpha=0.0,
         reg_lambda=1.0,
-        eval_metric="aucpr",
-        early_stopping_rounds=50,
         random_state=42,
         n_jobs=-1,
     )

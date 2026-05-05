@@ -65,11 +65,17 @@ def spread_ok(current_spread_pips: float, max_spread: float = 2.0) -> bool:
 
 
 def trend_aligned(row: pd.Series, direction: str) -> bool:
-    """Soft trend filter - only reject extreme counter-trend setups."""
+    """Only block when EMAs are clearly aligned against direction."""
     adx = float(row.get("adx", 0))
-    # Only apply trend filter when trend is very strong (ADX > 35)
     if adx < 35:
         return True  # No strong trend - allow signal
+    ema_up = bool(row.get("ema_aligned_up", 0))
+    ema_dn = bool(row.get("ema_aligned_dn", 0))
+    if direction == "BUY" and ema_dn:
+        return False  # Only block BUY if EMAs clearly bearish
+    if direction == "SELL" and ema_up:
+        return False  # Only block SELL if EMAs clearly bullish
+    return True  # Allow in all other cases
     if direction == "BUY":
         return bool(row.get("ema_aligned_up", row.get("trend_up", 1)))
     else:
@@ -179,15 +185,8 @@ def generate_signal(
         logger.debug(f"Rejected: trend not aligned for {direction}")
         return None
 
-    # ── Higher timeframe trend filter
-    htf_trend = get_htf_trend(pair.replace("/", "_"), "H4")
-    if htf_trend != "SIDEWAYS":
-        if direction == "BUY" and htf_trend == "DOWN":
-            logger.debug(f"Rejected: H4 trend is DOWN, skipping BUY on {pair}")
-            return None
-        if direction == "SELL" and htf_trend == "UP":
-            logger.debug(f"Rejected: H4 trend is UP, skipping SELL on {pair}")
-            return None
+    # ── Higher timeframe trend filter (disabled - too restrictive)
+    # htf_trend = get_htf_trend(pair.replace("/", "_"), "H4")
 
     # ── Risk layer
     entry = float(row["close"])

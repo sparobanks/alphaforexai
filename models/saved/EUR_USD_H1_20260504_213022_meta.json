@@ -1,0 +1,102 @@
+{
+  "pair": "EUR_USD",
+  "timeframe": "H1",
+  "trained_at": "2026-05-04T21:30:22.117948",
+  "train_rows": 14838,
+  "model_path": "models/saved/EUR_USD_H1_20260504_213022.joblib",
+  "walk_forward": [
+    {
+      "n_trades": 336,
+      "win_rate": 0.5506,
+      "expectancy": 3.76,
+      "profit_factor": 1.838,
+      "max_drawdown": 185.0,
+      "sharpe": 0.303,
+      "auc": 0.5679,
+      "fold": 1
+    },
+    {
+      "n_trades": 190,
+      "win_rate": 0.5895,
+      "expectancy": 4.74,
+      "profit_factor": 2.154,
+      "max_drawdown": 115.0,
+      "sharpe": 0.385,
+      "auc": 0.5421,
+      "fold": 2
+    },
+    {
+      "n_trades": 84,
+      "win_rate": 0.619,
+      "expectancy": 5.48,
+      "profit_factor": 2.438,
+      "max_drawdown": 95.0,
+      "sharpe": 0.451,
+      "auc": 0.5441,
+      "fold": 3
+    },
+    {
+      "n_trades": 99,
+      "win_rate": 0.5455,
+      "expectancy": 3.64,
+      "profit_factor": 1.8,
+      "max_drawdown": 125.0,
+      "sharpe": 0.292,
+      "auc": 0.5086,
+      "fold": 4
+    },
+    {
+      "error": "No signals generated at this threshold",
+      "fold": 5
+    }
+  ],
+  "avg_metrics": {
+    "win_rate": 0.5761,
+    "expectancy": 4.405,
+    "profit_factor": 2.0575,
+    "max_drawdown": 130.0,
+    "sharpe": 0.3578
+  },
+  "top_features": [
+    [
+      "dist_ema50",
+      0.043721601366996765
+    ],
+    [
+      "price_pos_50",
+      0.04114915803074837
+    ],
+    [
+      "dist_ema20",
+      0.033769335597753525
+    ],
+    [
+      "macd_growing",
+      0.032999806106090546
+    ],
+    [
+      "plus_di",
+      0.032763492316007614
+    ],
+    [
+      "ema_20_50_diff",
+      0.03170369565486908
+    ],
+    [
+      "minus_di",
+      0.030885105952620506
+    ],
+    [
+      "ret_10",
+      0.03044283762574196
+    ],
+    [
+      "sess_newyork",
+      0.030028188601136208
+    ],
+    [
+      "di_diff",
+      0.029800869524478912
+    ]
+  ]
+}
