@@ -34,10 +34,38 @@ async def close_expired_signals(db: AsyncSession):
         logger.info(f"Expired {len(expired)} signals")
 
 
+async def adjust_sl_on_oanda(signal: Signal, new_sl: float):
+    """Move SL on all open OANDA trades for this signal."""
+    if not signal.trade_ids:
+        return
+    try:
+        import json
+        from app.trading.auto_trade import modify_trade_sl
+        from app.db.session import AsyncSessionLocal as _ASL
+        # Get user credentials
+        async with _ASL() as db2:
+            from app.db.models import User
+            from sqlalchemy import select as sa_select
+            users = await db2.execute(
+                sa_select(User).where(User.auto_trade_enabled == True, User.tier == "vip")
+            )
+            for user in users.scalars().all():
+                trade_id_list = json.loads(signal.trade_ids)
+                for tid in trade_id_list:
+                    if tid:
+                        await modify_trade_sl(
+                            user.oanda_account_id, user.oanda_api_key,
+                            str(tid), new_sl, user.oanda_is_live
+                        )
+                        logger.info(f"Moved SL to {new_sl} for trade {tid}")
+    except Exception as e:
+        logger.error(f"SL adjustment failed: {e}")
+
+
 async def check_open_signals(db: AsyncSession, pair: str, pip_size: float = 0.0001):
     """
     Fetch recent candles and check if any open signals hit TP or SL.
-    Closes the trade and records P&L.
+    Also checks TP1/TP2 hits and adjusts SL automatically.
     """
     result = await db.execute(
         select(Signal).where(
@@ -72,6 +100,23 @@ async def check_open_signals(db: AsyncSession, pair: str, pip_size: float = 0.00
 
             if signal.direction == "BUY":
                 if h >= signal.tp_price:
+                    # Check TP1 hit - move SL to breakeven
+                    if signal.tp1_price and not signal.tp1_hit:
+                        tp1_hit = (signal.direction == "BUY" and high >= signal.tp1_price) or                                   (signal.direction == "SELL" and low <= signal.tp1_price)
+                        if tp1_hit:
+                            signal.tp1_hit = True
+                            await adjust_sl_on_oanda(signal, signal.entry_price)
+                            logger.info(f"TP1 hit for {signal.pair} - SL moved to breakeven {signal.entry_price}")
+
+                    # Check TP2 hit - move SL to TP1
+                    if signal.tp2_price and signal.tp1_hit and not signal.tp2_hit:
+                        tp2_hit = (signal.direction == "BUY" and high >= signal.tp2_price) or                                   (signal.direction == "SELL" and low <= signal.tp2_price)
+                        if tp2_hit:
+                            signal.tp2_hit = True
+                            if signal.tp1_price:
+                                await adjust_sl_on_oanda(signal, signal.tp1_price)
+                                logger.info(f"TP2 hit for {signal.pair} - SL moved to TP1 {signal.tp1_price}")
+
                     signal.status = SignalStatus.TP_HIT
                     signal.pnl_pips = tp_pips
                     signal.closed_at = datetime.utcnow().replace(tzinfo=timezone.utc)

@@ -77,13 +77,28 @@ async def _run_signal_check_inner():
             signal["vip_only"] = not is_primary
 
             async with AsyncSessionLocal() as db:
+                # Calculate TP1/TP2/TP3
+                from app.trading.auto_trade import PIP_SIZES
+                pip_val = PIP_SIZES.get(pair, 0.0001)
+                sign = 1 if signal["direction"] == "BUY" else -1
+                decimals = 3 if pip_val >= 0.01 else 5
+                tp1 = round(signal["entry"] + sign * 10 * pip_val, decimals)
+                tp2 = round(signal["entry"] + sign * 20 * pip_val, decimals)
+                tp3 = round(signal["entry"] + sign * 30 * pip_val, decimals)
+                signal["tp1"] = tp1
+                signal["tp2"] = tp2
+                signal["tp3"] = tp3
+
                 db_signal = Signal(
                     pair=signal["pair"],
                     timeframe=signal["timeframe"],
                     direction=signal["direction"],
                     entry_price=signal["entry"],
                     sl_price=signal["sl"],
-                    tp_price=signal["tp"],
+                    tp_price=signal["tp3"],
+                    tp1_price=signal.get("tp1"),
+                    tp2_price=signal.get("tp2"),
+                    tp3_price=signal.get("tp3"),
                     rr_ratio=signal["rr_ratio"],
                     confidence=signal["confidence"],
                     risk_pct=signal["risk_pct"],
@@ -101,7 +116,18 @@ async def _run_signal_check_inner():
             else:
                 recipients = await get_vip_emails()
             await publish_signal(signal, email_recipients=recipients)
-            await run_auto_trading(signal)
+            trade_result = await run_auto_trading(signal)
+            # Save trade IDs to signal for SL tracking
+            if trade_result and trade_result.get("trade_ids"):
+                import json
+                async with AsyncSessionLocal() as db2:
+                    from sqlalchemy import update as sa_update
+                    await db2.execute(
+                        sa_update(Signal)
+                        .where(Signal.pair == signal["pair"], Signal.status == SignalStatus.OPEN)
+                        .values(trade_ids=json.dumps(trade_result["trade_ids"]))
+                    )
+                    await db2.commit()
 
         except Exception as e:
             logger.error(f"Signal check error ({pair}): {e}")

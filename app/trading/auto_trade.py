@@ -98,6 +98,23 @@ async def place_oanda_order(
             return {"ok": False, "error": data.get("errorMessage", str(data))}
 
 
+async def modify_trade_sl(account_id: str, api_key: str, trade_id: str, 
+                          new_sl: float, is_live: bool = False) -> dict:
+    """Modify stop loss on an existing trade."""
+    base_url = "https://api-fxtrade.oanda.com" if is_live else "https://api-fxpractice.oanda.com"
+    url = f"{base_url}/v3/accounts/{account_id}/trades/{trade_id}/orders"
+    headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+    payload = {"stopLoss": {"price": str(round(new_sl, 5)), "timeInForce": "GTC"}}
+    try:
+        async with httpx.AsyncClient(timeout=10) as client:
+            resp = await client.put(url, headers=headers, json=payload)
+            if resp.status_code == 200:
+                return {"ok": True}
+            return {"ok": False, "error": resp.text}
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+
+
 async def calculate_units(
     account_id: str,
     api_key: str,
