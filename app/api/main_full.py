@@ -149,7 +149,7 @@ async def lifespan(app: FastAPI):
         logger.warning("No model loaded — run scripts/train.py first")
 
     # Signal check: every hour at :01
-    scheduler.add_job(run_signal_check, "cron", minute=1)
+    scheduler.add_job(run_signal_check, "interval", minutes=30)
     # Trade tracker: every 15 minutes
     scheduler.add_job(run_tracker, "interval", minutes=15)
     # Weekly digest every Monday at 8am UTC
