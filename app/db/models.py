@@ -63,6 +63,12 @@ class Signal(Base):
 
     created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
     expires_at = Column(DateTime(timezone=True))
+    tp1_price  = Column(Float, nullable=True)
+    tp2_price  = Column(Float, nullable=True)
+    tp3_price  = Column(Float, nullable=True)
+    tp1_hit    = Column(Boolean, default=False)
+    tp2_hit    = Column(Boolean, default=False)
+    trade_ids  = Column(String, nullable=True)
     closed_at = Column(DateTime(timezone=True))
 
     pnl_pips = Column(Float)               # filled when closed
