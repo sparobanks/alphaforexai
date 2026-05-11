@@ -54,7 +54,7 @@ async def register_model(meta: dict, db: AsyncSession = None):
             await db.close()
 
 
-async def activate_best_model(pair: str, timeframe: str, min_expectancy: float = 5.0):
+async def activate_best_model(pair: str, timeframe: str, min_expectancy: float = 2.5):
     """
     Promote the model with the best walk-forward expectancy to active.
     Only activates if expectancy >= min_expectancy pips.
@@ -65,12 +65,19 @@ async def activate_best_model(pair: str, timeframe: str, min_expectancy: float =
             .where(
                 ModelRun.pair == pair,
                 ModelRun.timeframe == timeframe,
-                ModelRun.expectancy >= min_expectancy,
+                ModelRun.expectancy.isnot(None),
             )
             .order_by(ModelRun.expectancy.desc())
-            .limit(1)
         )
-        best = result.scalar_one_or_none()
+        candidates = result.scalars().all()
+        import math
+        best = next(
+            (r for r in candidates
+             if r.expectancy is not None
+             and not math.isnan(r.expectancy)
+             and r.expectancy >= min_expectancy),
+            None
+        )
 
         if not best:
             logger.warning(f"No qualifying model found for {pair} {timeframe} (min expectancy {min_expectancy})")

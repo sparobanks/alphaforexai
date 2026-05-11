@@ -1,0 +1,108 @@
+{
+  "pair": "XAU_USD",
+  "timeframe": "H1",
+  "trained_at": "2026-05-11T18:31:46.587810",
+  "train_rows": 19594,
+  "model_path": "models/saved/XAU_USD_H1_20260511_183146.joblib",
+  "walk_forward": [
+    {
+      "n_trades": 715,
+      "win_rate": 0.5035,
+      "expectancy": 2.59,
+      "profit_factor": 1.521,
+      "max_drawdown": 770.0,
+      "sharpe": 0.207,
+      "auc": 0.5226,
+      "fold": 1
+    },
+    {
+      "n_trades": 631,
+      "win_rate": 0.561,
+      "expectancy": 4.03,
+      "profit_factor": 1.917,
+      "max_drawdown": 255.0,
+      "sharpe": 0.324,
+      "auc": 0.5469,
+      "fold": 2
+    },
+    {
+      "n_trades": 956,
+      "win_rate": 0.5628,
+      "expectancy": 4.07,
+      "profit_factor": 1.931,
+      "max_drawdown": 310.0,
+      "sharpe": 0.328,
+      "auc": 0.5114,
+      "fold": 3
+    },
+    {
+      "n_trades": 676,
+      "win_rate": 0.5562,
+      "expectancy": 3.91,
+      "profit_factor": 1.88,
+      "max_drawdown": 215.0,
+      "sharpe": 0.314,
+      "auc": 0.4976,
+      "fold": 4
+    },
+    {
+      "n_trades": 774,
+      "win_rate": 0.4832,
+      "expectancy": 2.08,
+      "profit_factor": 1.403,
+      "max_drawdown": 160.0,
+      "sharpe": 0.167,
+      "auc": 0.4843,
+      "fold": 5
+    }
+  ],
+  "avg_metrics": {
+    "win_rate": 0.5333,
+    "expectancy": 3.336,
+    "profit_factor": 1.7304,
+    "max_drawdown": 342.0,
+    "sharpe": 0.268
+  },
+  "top_features": [
+    [
+      "ema_aligned_up",
+      0.043991245329380035
+    ],
+    [
+      "rsi_mid_bear",
+      0.03093324601650238
+    ],
+    [
+      "macd_growing",
+      0.02870217151939869
+    ],
+    [
+      "ema_aligned_dn",
+      0.025736473500728607
+    ],
+    [
+      "dist_ema200",
+      0.02569880709052086
+    ],
+    [
+      "monthly_trend",
+      0.025409257039427757
+    ],
+    [
+      "mom_20",
+      0.024492841213941574
+    ],
+    [
+      "ema_50_100_diff",
+      0.02400311827659607
+    ],
+    [
+      "bb_squeeze",
+      0.02396702952682972
+    ],
+    [
+      "price_pos_50",
+      0.02379177138209343
+    ]
+  ]
+}

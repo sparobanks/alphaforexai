@@ -1,0 +1,108 @@
+{
+  "pair": "AUD_USD",
+  "timeframe": "H1",
+  "trained_at": "2026-05-11T14:24:23.696145",
+  "train_rows": 24761,
+  "model_path": "models/saved/AUD_USD_H1_20260511_142423.joblib",
+  "walk_forward": [
+    {
+      "n_trades": 1064,
+      "win_rate": 0.5075,
+      "expectancy": 2.69,
+      "profit_factor": 1.546,
+      "max_drawdown": 430.0,
+      "sharpe": 0.215,
+      "auc": 0.4942,
+      "fold": 1
+    },
+    {
+      "n_trades": 896,
+      "win_rate": 0.5022,
+      "expectancy": 2.56,
+      "profit_factor": 1.513,
+      "max_drawdown": 270.0,
+      "sharpe": 0.204,
+      "auc": 0.5104,
+      "fold": 2
+    },
+    {
+      "n_trades": 1037,
+      "win_rate": 0.5583,
+      "expectancy": 3.96,
+      "profit_factor": 1.896,
+      "max_drawdown": 255.0,
+      "sharpe": 0.319,
+      "auc": 0.5168,
+      "fold": 3
+    },
+    {
+      "n_trades": 885,
+      "win_rate": 0.5243,
+      "expectancy": 3.11,
+      "profit_factor": 1.653,
+      "max_drawdown": 440.0,
+      "sharpe": 0.249,
+      "auc": 0.5443,
+      "fold": 4
+    },
+    {
+      "n_trades": 796,
+      "win_rate": 0.5013,
+      "expectancy": 2.53,
+      "profit_factor": 1.508,
+      "max_drawdown": 290.0,
+      "sharpe": 0.203,
+      "auc": 0.4935,
+      "fold": 5
+    }
+  ],
+  "avg_metrics": {
+    "win_rate": 0.5187,
+    "expectancy": 2.97,
+    "profit_factor": 1.6232,
+    "max_drawdown": 337.0,
+    "sharpe": 0.238
+  },
+  "top_features": [
+    [
+      "sess_overlap",
+      0.03372723609209061
+    ],
+    [
+      "adx_strong",
+      0.03035462647676468
+    ],
+    [
+      "rsi_mid_bear",
+      0.029363105073571205
+    ],
+    [
+      "ema_aligned_dn",
+      0.026300767436623573
+    ],
+    [
+      "adx_trending",
+      0.02528654783964157
+    ],
+    [
+      "monthly_trend",
+      0.024037674069404602
+    ],
+    [
+      "ema_aligned_up",
+      0.023362593725323677
+    ],
+    [
+      "dist_ema200",
+      0.023125119507312775
+    ],
+    [
+      "ema_20_50_diff",
+      0.02281678281724453
+    ],
+    [
+      "mom_20",
+      0.02264120988547802
+    ]
+  ]
+}

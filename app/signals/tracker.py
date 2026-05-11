@@ -77,80 +77,74 @@ async def check_open_signals(db: AsyncSession, pair: str, pip_size: float = 0.00
     if not open_signals:
         return
 
-    # Fetch last 50 candles to check against
     df = fetch_candles(pair, settings.ACTIVE_TIMEFRAME, count=50)
     if df.empty:
         return
 
     tp_pips = settings.TP_PIPS
     sl_pips = settings.SL_PIPS
-    now = datetime.utcnow()
     closed_signals = []
 
     for signal in open_signals:
-        # Only look at candles after signal creation
-        signal_time = signal.created_at.replace(tzinfo=None) if signal.created_at.tzinfo else signal.created_at
-        candles_after = df[df["time"] > signal_time]
+        signal_time = signal.created_at.replace(tzinfo=None) if signal.created_at and signal.created_at.tzinfo else signal.created_at
+        candles_after = df[df["time"] > signal_time] if signal_time else df
         if candles_after.empty:
             continue
+
+        is_buy = signal.direction == "BUY"
 
         for _, candle in candles_after.iterrows():
             h = candle["high"]
             l = candle["low"]
 
-            if signal.direction == "BUY":
-                if h >= signal.tp_price:
-                    # Check TP1 hit - move SL to breakeven
-                    if signal.tp1_price and not signal.tp1_hit:
-                        tp1_hit = (signal.direction == "BUY" and high >= signal.tp1_price) or                                   (signal.direction == "SELL" and low <= signal.tp1_price)
-                        if tp1_hit:
-                            signal.tp1_hit = True
-                            await adjust_sl_on_oanda(signal, signal.entry_price)
-                            logger.info(f"TP1 hit for {signal.pair} - SL moved to breakeven {signal.entry_price}")
+            # TP1 hit check (move SL to breakeven)
+            if signal.tp1_price and not signal.tp1_hit:
+                tp1_hit = (is_buy and h >= signal.tp1_price) or (not is_buy and l <= signal.tp1_price)
+                if tp1_hit:
+                    signal.tp1_hit = True
+                    await adjust_sl_on_oanda(signal, signal.entry_price)
+                    logger.info(f"TP1 hit for {signal.pair} {signal.direction} — SL moved to breakeven {signal.entry_price}")
 
-                    # Check TP2 hit - move SL to TP1
-                    if signal.tp2_price and signal.tp1_hit and not signal.tp2_hit:
-                        tp2_hit = (signal.direction == "BUY" and high >= signal.tp2_price) or                                   (signal.direction == "SELL" and low <= signal.tp2_price)
-                        if tp2_hit:
-                            signal.tp2_hit = True
-                            if signal.tp1_price:
-                                await adjust_sl_on_oanda(signal, signal.tp1_price)
-                                logger.info(f"TP2 hit for {signal.pair} - SL moved to TP1 {signal.tp1_price}")
+            # TP2 hit check (move SL to TP1)
+            if signal.tp2_price and signal.tp1_hit and not signal.tp2_hit:
+                tp2_hit = (is_buy and h >= signal.tp2_price) or (not is_buy and l <= signal.tp2_price)
+                if tp2_hit:
+                    signal.tp2_hit = True
+                    if signal.tp1_price:
+                        await adjust_sl_on_oanda(signal, signal.tp1_price)
+                        logger.info(f"TP2 hit for {signal.pair} {signal.direction} — SL moved to TP1 {signal.tp1_price}")
 
-                    signal.status = SignalStatus.TP_HIT
-                    signal.pnl_pips = tp_pips
-                    signal.closed_at = datetime.utcnow().replace(tzinfo=timezone.utc)
-                    closed_signals.append({"pair": signal.pair, "direction": signal.direction, "status": "TP_HIT", "pnl_pips": tp_pips, "confidence": signal.confidence})
-                    break
-                elif l <= signal.sl_price:
-                    signal.status = SignalStatus.SL_HIT
-                    signal.pnl_pips = -sl_pips
-                    signal.closed_at = datetime.utcnow().replace(tzinfo=timezone.utc)
-                    closed_signals.append({"pair": signal.pair, "direction": signal.direction, "status": "SL_HIT", "pnl_pips": -sl_pips, "confidence": signal.confidence})
-                    break
-            else:  # SELL
-                if l <= signal.tp_price:
-                    signal.status = SignalStatus.TP_HIT
-                    signal.pnl_pips = tp_pips
-                    signal.closed_at = datetime.utcnow().replace(tzinfo=timezone.utc)
-                    closed_signals.append({"pair": signal.pair, "direction": signal.direction, "status": "TP_HIT", "pnl_pips": tp_pips, "confidence": signal.confidence})
-                    break
-                elif h >= signal.sl_price:
-                    signal.status = SignalStatus.SL_HIT
-                    signal.pnl_pips = -sl_pips
-                    signal.closed_at = datetime.utcnow().replace(tzinfo=timezone.utc)
-                    closed_signals.append({"pair": signal.pair, "direction": signal.direction, "status": "SL_HIT", "pnl_pips": -sl_pips, "confidence": signal.confidence})
-                    break
+            # Full TP (TP3) hit
+            tp_hit = (is_buy and h >= signal.tp_price) or (not is_buy and l <= signal.tp_price)
+            sl_hit = (is_buy and l <= signal.sl_price) or (not is_buy and h >= signal.sl_price)
+
+            if tp_hit:
+                signal.status = SignalStatus.TP_HIT
+                signal.pnl_pips = tp_pips
+                signal.closed_at = datetime.utcnow().replace(tzinfo=timezone.utc)
+                closed_signals.append({
+                    "pair": signal.pair, "direction": signal.direction,
+                    "status": "TP_HIT", "pnl_pips": tp_pips, "confidence": signal.confidence
+                })
+                break
+            elif sl_hit:
+                signal.status = SignalStatus.SL_HIT
+                signal.pnl_pips = -sl_pips
+                signal.closed_at = datetime.utcnow().replace(tzinfo=timezone.utc)
+                closed_signals.append({
+                    "pair": signal.pair, "direction": signal.direction,
+                    "status": "SL_HIT", "pnl_pips": -sl_pips, "confidence": signal.confidence
+                })
+                break
 
     await db.commit()
-    # Send Telegram alerts for closed signals
+
     for cs in closed_signals:
         try:
             from app.signals.publisher import send_close_alert
             await send_close_alert(cs)
-        except Exception as _e:
-            pass
-
+        except Exception as e:
+            logger.warning(f"Close alert failed: {e}")
 
 async def update_daily_performance(db: AsyncSession, pair: str, for_date: date = None):
     """Aggregate closed signals into the Performance table for the given date."""

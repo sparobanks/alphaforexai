@@ -127,16 +127,20 @@ def train(df, pair="EUR_USD", timeframe="H1", save_dir=None):
 
     logger.info(f"Walk-forward avg: {avg_metrics}")
 
+    df = df[df["label_binary"].notna()].copy()
+    logger.info(f"After notna filter: {len(df)} rows, label_binary unique: {df['label_binary'].unique()[:10]}, NaN count: {df['label_binary'].isna().sum()}")
+    df["label_binary"] = df["label_binary"].astype(int)
     split   = int(len(df) * 0.8)
     train_df = df.iloc[:split]
     val_df   = df.iloc[split:]
 
-    X_train = train_df[FEATURE_COLS].values
-    y_train = train_df["label_binary"].values
-    X_val   = val_df[FEATURE_COLS].values
-    y_val   = val_df["label_binary"].values
+    X_train = train_df[FEATURE_COLS].values.astype(float)
+    y_train = train_df["label_binary"].values.astype(int)
+    X_val   = val_df[FEATURE_COLS].values.astype(float)
+    y_val   = val_df["label_binary"].values.astype(int)
 
     model = _build_model()
+    print(f"DEBUG final fit: y_train unique={set(y_train.tolist())}, y_val unique={set(y_val.tolist())}", flush=True)
     model.fit(X_train, y_train, eval_set=[(X_val, y_val)], verbose=50)
 
     importance    = dict(zip(FEATURE_COLS, model.feature_importances_.tolist()))

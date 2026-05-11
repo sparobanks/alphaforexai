@@ -1,0 +1,108 @@
+{
+  "pair": "AUD_USD",
+  "timeframe": "H1",
+  "trained_at": "2026-05-11T18:30:57.728527",
+  "train_rows": 24761,
+  "model_path": "models/saved/AUD_USD_H1_20260511_183057.joblib",
+  "walk_forward": [
+    {
+      "n_trades": 1023,
+      "win_rate": 0.5024,
+      "expectancy": 2.56,
+      "profit_factor": 1.515,
+      "max_drawdown": 395.0,
+      "sharpe": 0.205,
+      "auc": 0.4936,
+      "fold": 1
+    },
+    {
+      "n_trades": 885,
+      "win_rate": 0.4938,
+      "expectancy": 2.34,
+      "profit_factor": 1.463,
+      "max_drawdown": 335.0,
+      "sharpe": 0.188,
+      "auc": 0.5053,
+      "fold": 2
+    },
+    {
+      "n_trades": 1038,
+      "win_rate": 0.5462,
+      "expectancy": 3.66,
+      "profit_factor": 1.806,
+      "max_drawdown": 330.0,
+      "sharpe": 0.294,
+      "auc": 0.5156,
+      "fold": 3
+    },
+    {
+      "n_trades": 844,
+      "win_rate": 0.5166,
+      "expectancy": 2.91,
+      "profit_factor": 1.603,
+      "max_drawdown": 400.0,
+      "sharpe": 0.233,
+      "auc": 0.5305,
+      "fold": 4
+    },
+    {
+      "n_trades": 760,
+      "win_rate": 0.5105,
+      "expectancy": 2.76,
+      "profit_factor": 1.565,
+      "max_drawdown": 305.0,
+      "sharpe": 0.221,
+      "auc": 0.4917,
+      "fold": 5
+    }
+  ],
+  "avg_metrics": {
+    "win_rate": 0.5139,
+    "expectancy": 2.846,
+    "profit_factor": 1.5904,
+    "max_drawdown": 353.0,
+    "sharpe": 0.2282
+  },
+  "top_features": [
+    [
+      "weekly_trend",
+      0.035658035427331924
+    ],
+    [
+      "adx_strong",
+      0.03513866662979126
+    ],
+    [
+      "macd_bull",
+      0.028039012104272842
+    ],
+    [
+      "sess_overlap",
+      0.02462528832256794
+    ],
+    [
+      "monthly_trend",
+      0.024389808997511864
+    ],
+    [
+      "dist_ema200",
+      0.023317240178585052
+    ],
+    [
+      "rsi_mid_bull",
+      0.02308727242052555
+    ],
+    [
+      "ema_20_50_diff",
+      0.022975211963057518
+    ],
+    [
+      "adx",
+      0.022328807041049004
+    ],
+    [
+      "ema_aligned_dn",
+      0.022029725834727287
+    ]
+  ]
+}

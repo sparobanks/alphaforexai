@@ -20,9 +20,11 @@ from app.data.ingest_oanda    import fetch_candles
 from app.features.indicators  import build_features
 from app.models.registry      import load_active_predictor
 from app.signals.rules        import generate_signal
+from app.signals.news_filter   import fetch_news_times
 from app.signals.publisher    import publish_signal
 from app.signals.tracker      import run_tracker
 from app.signals.weekly_digest import send_weekly_digest
+from app.api.routes_models    import _retrain_task
 from app.trading.auto_trade import run_auto_trading
 from app.core.config          import settings
 from app.core.logger          import logger
@@ -50,6 +52,31 @@ async def _run_signal_check_inner():
     if not predictors:
         predictors = {}
     PRIMARY_PAIR = "EUR_USD"
+
+    # Fetch FF calendar once per cycle — avoids 429 rate limit
+    _all_news = {}
+    try:
+        import httpx as _hx
+        from app.signals.news_filter import PAIR_CURRENCIES, HIGH_IMPACT
+        from datetime import timezone as _tz
+        async with _hx.AsyncClient(timeout=10) as _hc:
+            _ff = await _hc.get("https://nfs.faireconomy.media/ff_calendar_thisweek.json", headers={"User-Agent": "Mozilla/5.0"})
+            _ff_data = _ff.json() if _ff.status_code == 200 else []
+        for _p in settings.ACTIVE_PAIRS:
+            _cur = PAIR_CURRENCIES.get(_p, ["USD"])
+            _times = []
+            for _ev in _ff_data:
+                if _ev.get("impact") not in HIGH_IMPACT: continue
+                if _ev.get("country", "").upper() not in _cur: continue
+                try:
+                    _dt = datetime.fromisoformat(_ev["date"]).astimezone(_tz.utc).replace(tzinfo=None)
+                    _times.append(_dt)
+                except Exception: pass
+            _all_news[_p] = _times
+        logger.info(f"News calendar: {sum(len(v) for v in _all_news.values())} events loaded")
+    except Exception as _ne:
+        logger.warning(f"News calendar fetch failed: {_ne}")
+
     for pair in settings.ACTIVE_PAIRS:
         try:
             is_primary = (pair == PRIMARY_PAIR)
@@ -66,8 +93,10 @@ async def _run_signal_check_inner():
             if df.empty:
                 continue
             latest_row = df.iloc[-1]
-            signal = generate_signal(latest_row, predictor, current_dt=datetime.utcnow(), pair=pair)
-            signal = generate_signal(latest_row, predictor, current_dt=datetime.utcnow(), pair=pair)
+            # Fetch high-impact news times for this pair (no Redis cache needed at 30min interval)
+            news_times = _all_news.get(pair, [])
+            now = datetime.utcnow()
+            signal = generate_signal(latest_row, predictor, current_dt=now, news_times=news_times, pair=pair)
 
             if signal is None:
                 continue
@@ -77,6 +106,18 @@ async def _run_signal_check_inner():
             signal["vip_only"] = not is_primary
 
             async with AsyncSessionLocal() as db:
+                # Skip if open signal already exists for this pair
+                from sqlalchemy import select as _sel
+                existing = await db.execute(
+                    _sel(Signal).where(
+                        Signal.pair == pair.replace("_", "/"),
+                        Signal.status == SignalStatus.OPEN,
+                    )
+                )
+                if existing.scalars().first() is not None:
+                    logger.debug(f"Skipping {pair} — open signal already exists")
+                    continue
+
                 # Calculate TP1/TP2/TP3
                 from app.trading.auto_trade import PIP_SIZES
                 pip_val = PIP_SIZES.get(pair, 0.0001)
@@ -154,6 +195,8 @@ async def lifespan(app: FastAPI):
     scheduler.add_job(run_tracker, "interval", minutes=15)
     # Weekly digest every Monday at 8am UTC
     scheduler.add_job(send_weekly_digest, "cron", day_of_week="mon", hour=8, minute=0)
+    # Auto model retrain every Sunday at 2am UTC (markets closed)
+    scheduler.add_job(_retrain_task, "cron", day_of_week="sun", hour=2, minute=0)
     scheduler.start()
     logger.info("ForexAI Signals API started")
 
