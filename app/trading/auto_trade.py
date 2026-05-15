@@ -78,7 +78,7 @@ async def place_oanda_order(
                 "price": str(round(tp_price, 5)),
                 "timeInForce": "GTC",
             },
-            "timeInForce": "FOK",
+            "timeInForce": "GFD",
         }
     }
 
@@ -137,9 +137,11 @@ async def calculate_units(
         risk_amount = balance * (risk_pct / 100)
         pip_size    = PIP_SIZES.get(instrument, 0.0001)
         pip_value   = pip_size * 1  # approx for USD pairs
-        # XAU/USD units are troy oz - keep very small
+        # XAU/USD: 1 unit = 1 troy oz, 1 pip = $0.10 per unit
         if instrument == "XAU_USD":
-            units = max(1, min(int(risk_amount / 50), 5))  # max 5 oz
+            # pip_value = $0.10 per unit per pip
+            xau_units = int(risk_amount / (sl_pips * 0.10))
+            units = max(1, min(xau_units, 10))  # min 1oz, max 10oz
         else:
             units = int(risk_amount / (sl_pips * pip_value))
             units = max(1000, min(units, 100000))

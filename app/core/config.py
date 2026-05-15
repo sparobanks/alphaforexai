@@ -41,7 +41,7 @@ class Settings(BaseSettings):
     TP_PIPS: int = 20
     SL_PIPS: int = 10
     SIGNAL_EXPIRY_BARS: int = 12           # bars before signal expires
-    ACTIVE_PAIRS: list[str] = ["EUR_USD","USD_JPY","GBP_USD","AUD_USD","XAU_USD"]
+    ACTIVE_PAIRS: list[str] = ["EUR_USD","XAU_USD"]
     ACTIVE_TIMEFRAME: str = "H1"
 
     # Model

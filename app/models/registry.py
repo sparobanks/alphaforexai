@@ -67,10 +67,11 @@ async def activate_best_model(pair: str, timeframe: str, min_expectancy: float =
                 ModelRun.timeframe == timeframe,
                 ModelRun.expectancy.isnot(None),
             )
-            .order_by(ModelRun.expectancy.desc())
+            .order_by(ModelRun.trained_at.desc())
         )
         candidates = result.scalars().all()
         import math
+        # Prefer most recent model that meets threshold
         best = next(
             (r for r in candidates
              if r.expectancy is not None

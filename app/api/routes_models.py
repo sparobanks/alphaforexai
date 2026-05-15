@@ -107,10 +107,6 @@ async def _retrain_task():
                             deleted += 1
                         except Exception:
                             pass
-                    os.remove(f)
-                    deleted += 1
-                except Exception:
-                    pass
         if deleted:
             logger.info(f"Cleaned up {deleted} old model files")
 
@@ -118,7 +114,6 @@ async def _retrain_task():
         await _tg(f"✅ <b>Auto Retrain Complete</b>\n\n{summary}\n🗑 Cleaned {deleted} old models")
 
     except Exception as e:
-        import traceback; traceback.print_exc()
         import traceback; traceback.print_exc()
         logger.error(f"Retrain failed: {e}", exc_info=True)
         await _tg(f"🚨 <b>Auto Retrain FAILED</b>\n<code>{e}</code>")
