@@ -92,6 +92,16 @@ async def _retrain_task():
             logger.info(f"Retrain complete for {pair}")
             results.append(f"✅ {pair}: {acc:.1%} acc")
 
+        # Hot-reload predictors in memory after retrain
+        try:
+            from app.api.main_full import predictors as _preds
+            from app.models.registry import load_active_predictor
+            for _pair in settings.ACTIVE_PAIRS:
+                _preds[_pair] = await load_active_predictor(_pair, settings.ACTIVE_TIMEFRAME)
+                logger.info(f"Hot-reloaded model for {_pair}")
+        except Exception as _re:
+            logger.warning(f"Hot-reload failed: {_re}")
+
         # Cleanup: keep only 2 most recent models per pair
         import glob, os
         models_dir = "/opt/forexai/models/saved"

@@ -78,7 +78,7 @@ async def place_oanda_order(
                 "price": str(round(tp_price, 5)),
                 "timeInForce": "GTC",
             },
-            "timeInForce": "GFD",
+            "timeInForce": "IOC",
         }
     }
 
@@ -171,6 +171,7 @@ async def execute_signal_for_user(user: User, signal: dict) -> dict:
         return {"ok": False, "error": "Missing entry/SL/TP"}
 
     sl_pips = abs(entry - sl_price) / PIP_SIZES.get(instrument, 0.0001)
+    logger.info(f"Auto-trade: {instrument} entry={entry} sl={sl_price} tp={tp_price} sl_pips={sl_pips:.1f} risk_pct={risk_pct}")
 
     units = await calculate_units(
         user.oanda_account_id, user.oanda_api_key,
