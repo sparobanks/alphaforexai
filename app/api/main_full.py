@@ -118,14 +118,16 @@ async def _run_signal_check_inner():
                     logger.debug(f"Skipping {pair} — open signal already exists")
                     continue
 
-                # Calculate TP1/TP2/TP3
+                # Calculate TP1/TP2/TP3 based on actual SL/TP distance
                 from app.trading.auto_trade import PIP_SIZES
-                pip_val = PIP_SIZES.get(pair, 0.0001)
+                pip_val = PIP_SIZES.get(pair.replace("/", "_"), 0.0001)
                 sign = 1 if signal["direction"] == "BUY" else -1
                 decimals = 3 if pip_val >= 0.01 else 5
-                tp1 = round(signal["entry"] + sign * 10 * pip_val, decimals)
-                tp2 = round(signal["entry"] + sign * 20 * pip_val, decimals)
-                tp3 = round(signal["entry"] + sign * 30 * pip_val, decimals)
+                _tp_dist = abs(signal["tp"] - signal["entry"])
+                _sl_dist = abs(signal["sl"] - signal["entry"])
+                tp1 = round(signal["entry"] + sign * _tp_dist * 0.33, decimals)
+                tp2 = round(signal["entry"] + sign * _tp_dist * 0.66, decimals)
+                tp3 = round(signal["tp"], decimals)
                 signal["tp1"] = tp1
                 signal["tp2"] = tp2
                 signal["tp3"] = tp3
@@ -136,7 +138,7 @@ async def _run_signal_check_inner():
                     direction=signal["direction"],
                     entry_price=signal["entry"],
                     sl_price=signal["sl"],
-                    tp_price=signal["tp3"],
+                    tp_price=signal["tp"],
                     tp1_price=signal.get("tp1"),
                     tp2_price=signal.get("tp2"),
                     tp3_price=signal.get("tp3"),
